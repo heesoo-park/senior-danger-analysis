@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CareEnrollmentActivity">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="보호자 등록"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        style="@style/Title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="위험상황 발생 시 알림을 받을\n보호자의 정보를 입력해주세요."
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        style="@style/Content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- ID 입력 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="아이디"
+                style="@style/InputTitle"/>
+
+            <EditText
+                android:id="@+id/editTextCareId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="id"
+                android:textSize="40dp"
+                android:inputType="text"
+                style="@style/InputBox"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Button Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/careEnrollButton"
+            android:layout_width="470dp"
+            android:layout_margin="20dp"
+            style="@style/ButtonStyle"
+            android:text="등록"/>
+
+    </LinearLayout>
+
+</LinearLayout>

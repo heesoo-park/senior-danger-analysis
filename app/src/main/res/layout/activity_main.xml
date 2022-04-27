@@ -1,23 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="@drawable/background"
     tools:context=".MainActivity">
 
-    <TextureView
-        android:id="@+id/textureView"
-        android:layout_width="match_parent"
+    <!-- empty -->
+    <LinearLayout
+        android:layout_width="350dp"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btnCapture"/>
+        android:gravity="center"
+        android:orientation="vertical">
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btnCapture"
-        android:text="CAPTURE"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <!-- Logo & Preview -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="30px"
+        android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/mainImageView"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            style="@style/MainActivityContentSize" />
 
-</RelativeLayout>
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            style="@style/MainActivityContentSize" />
+
+        <TextView
+            android:id="@+id/stateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/STATE_STOP"
+            style="@style/MainActivityStateStyle" />
+    </LinearLayout>
+
+    <!-- Button Container -->
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="match_parent"
+        android:paddingTop="30dp"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/editInfoButton"
+            android:text="@string/EDIT_INFO"
+            style="@style/MainActivityButtonStyle"/>
+
+        <Button
+            android:id="@+id/serviceToggleButton"
+            android:text="@string/STOP_SERVICE"
+            style="@style/MainActivityButtonStyle"/>
+
+        <Button
+            android:id="@+id/previewToggleButton"
+            android:text="@string/OPEN_PREVIEW"
+            style="@style/MainActivityButtonStyle"/>
+
+    </LinearLayout>
+
+</LinearLayout>

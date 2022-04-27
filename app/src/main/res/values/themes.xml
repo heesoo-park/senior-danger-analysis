@@ -13,4 +13,67 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <!-- Common Styles-->
+    <style name="ButtonStyle">
+        <item name="android:textSize">50dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:letterSpacing">0.5</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
+
+    <style name="Title">
+        <item name="android:textSize">72dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
+
+    <style name="Content">
+        <item name="android:textSize">32dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
+
+    <style name="InputTitle">
+        <item name="android:textSize">60dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
+
+    <style name="InputBox">
+        <item name="android:textSize">60dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
+
+    <!-- Main Activity Styles-->
+    <style name="MainActivityButtonStyle">
+        <item name="android:textSize">40dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
+
+    <style name="MainActivityStateStyle">
+        <item name="android:textSize">70dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
+
+    <style name="MainActivityContentSize">
+        <item name="android:layout_width">450dp</item>
+        <item name="android:layout_height">450dp</item>
+        <item name="android:fontFamily">@font/sb_aggro_l</item>
+    </style>
 </resources>

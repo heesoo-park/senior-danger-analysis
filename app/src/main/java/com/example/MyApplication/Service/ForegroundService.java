@@ -43,27 +43,35 @@ public class ForegroundService extends Service {
 
     @Override
     public void onCreate() {
-        Log.e(TAG, "Service Create");
         super.onCreate();
-
-        // Thread 실행
-        consumerThread = new ConsumerThread(queue);
-        consumerThread.start();
-        captureThread = new CaptureThread(queue);
-        captureThread.start();
+        Log.e(TAG, "onCreate");
+        startThreads();
     }
 
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestory");
+        if (isServiceRunning(getApplication())) {
+            try {
+                captureThread.join();
+                consumerThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         super.onDestroy();
         task.cancel(true);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!isServiceRunning(getApplication())) {
+            startThreads();
+        }
+
         task = new BackgroundTask();
         task.execute();
+
         initializeNotification(); // generate foreground
         return START_NOT_STICKY;
     }
@@ -102,6 +110,13 @@ public class ForegroundService extends Service {
         startForeground(1, notification);
     }
 
+    private void startThreads() {
+        consumerThread = new ConsumerThread(queue);
+        consumerThread.start();
+        captureThread = new CaptureThread(queue);
+        captureThread.start();
+    }
+
     class BackgroundTask extends AsyncTask<Integer, String, Integer> {
         String result = "";
         @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
@@ -109,7 +124,7 @@ public class ForegroundService extends Service {
         protected Integer doInBackground(Integer... values) {
             while(isCancelled() == false) {
                 try {
-                    Log.e(TAG, value + "번째 실행중");
+                    Log.e(TAG, value + "s");
                     Thread.sleep(10000);
                     value++;
                 } catch (InterruptedException ex) { }
