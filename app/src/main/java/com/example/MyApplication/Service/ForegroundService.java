@@ -31,6 +31,7 @@ public class ForegroundService extends Service {
     private Queue<byte[]> queue = new LinkedList<>();
     private CaptureThread captureThread;
     private ConsumerThread consumerThread;
+    private static boolean running = true;
     int value = 0;
 
     public ForegroundService() { }
@@ -51,14 +52,9 @@ public class ForegroundService extends Service {
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestory");
-        if (isServiceRunning(getApplication())) {
-            try {
-                captureThread.join();
-                consumerThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        captureThread.interrupt();
+        consumerThread.interrupt();
+        captureThread.onPause();
         super.onDestroy();
         task.cancel(true);
     }
@@ -74,6 +70,10 @@ public class ForegroundService extends Service {
 
         initializeNotification(); // generate foreground
         return START_NOT_STICKY;
+    }
+
+    public static boolean isRunning() {
+        return running;
     }
 
     public static boolean isServiceRunning(Context context) {

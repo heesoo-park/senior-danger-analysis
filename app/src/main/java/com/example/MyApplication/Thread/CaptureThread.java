@@ -7,6 +7,9 @@ import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.util.Log;
 
+import com.example.MyApplication.MainActivity;
+import com.example.MyApplication.Service.ForegroundService;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Queue;
@@ -19,6 +22,10 @@ public class CaptureThread extends Thread {
     private static final int PICTURE_WIDTH = 320;
     private static final int PICTURE_HEIGHT = 240;
     private Queue<byte[]> queue;
+
+    private long beforeTime;
+    private long afterTime;
+    private long diffTime;
 
     public CaptureThread(Queue<byte[]> queue) {
         this.camera = Camera.open(0);
@@ -56,7 +63,20 @@ public class CaptureThread extends Thread {
             public void onPreviewFrame(byte[] data, Camera camera) {
                 try {
                     byte[] baos = convertYuvToJpeg(data, camera);
-                    Log.e(TAG, "image capture! " + count + ", Queue Size: " + queue.size() + baos);
+                    if (baos == null) {
+                        return;
+                    }
+                    Log.e(TAG, "image capture! " + count + ", Queue Size: " + queue.size() + ", Bytes: " + baos);
+                    if (count % 30 == 0) {
+                        if (count == 0) {
+                            beforeTime = System.currentTimeMillis();
+                        } else {
+                            afterTime = System.currentTimeMillis();
+                            diffTime = (afterTime - beforeTime) / 1000;
+                            Log.i(TAG, "시간" + diffTime);
+                            beforeTime = afterTime;
+                        }
+                    }
                     count++;
                     queue.add(baos);
                 } catch (Exception e) {
@@ -68,6 +88,8 @@ public class CaptureThread extends Thread {
     }
 
     public byte[] convertYuvToJpeg(byte[] data, Camera camera) {
+        if (camera == null)
+            return null;
         YuvImage image = new YuvImage(data, ImageFormat.NV21,
                 camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, null);
 

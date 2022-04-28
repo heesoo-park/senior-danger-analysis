@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.example.MyApplication.Library.AnimatedGifEncoder;
+import com.example.MyApplication.Service.ForegroundService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,7 +55,7 @@ public class AnalysisThread extends Thread {
         return bitmap ;
     }
 
-    private File getAnimatedImage() {
+    private File saveAnimatedImage() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.getDefault() );
         Date curDate = new Date(System.currentTimeMillis());
         String filename = formatter.format(curDate);
@@ -72,7 +73,6 @@ public class AnalysisThread extends Thread {
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             AnimatedGifEncoder encoder = new AnimatedGifEncoder();
-
 
             encoder.start(bos);
             // Convert to bitmap...
@@ -100,34 +100,14 @@ public class AnalysisThread extends Thread {
     @Override
     public void run() {
         Log.e(TAG, "Analysis Thread " + num + " Start...");
-        File savedFile = getOutputFile();
-/*
-        if (savedFile == null) {
-            return;
-        } else {
-            FileOutputStream fos = null;
-            BufferedWriter writer = null;
-            try {
-                fos = new FileOutputStream(savedFile);
-                writer = new BufferedWriter(new OutputStreamWriter(fos));
+        //saveAnimatedImage();
+        Log.e(TAG, "모델 처리 대략 5초 걸린다고 가정...");
 
-                for (byte[] frame: frames) {
-                    for (byte b: frame) {
-                        writer.write(Integer.toString((int) b) + " ");
-                    }
-                    writer.write("\r\n");
-                    writer.flush();
-                    Log.i(TAG, "Frame Length: "+ frame.length);
-                }
-                writer.close();
-                fos.close();
-                Log.e(TAG, "New: " + savedFile.getPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
-        getAnimatedImage();
-
+        try {
+            sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Log.e(TAG, "Analysis Thread " + num + " Finish...");
     }
 }

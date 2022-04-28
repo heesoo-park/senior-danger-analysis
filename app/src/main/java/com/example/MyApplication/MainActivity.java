@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -17,15 +16,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.MyApplication.Activity.TempActivity;
 import com.example.MyApplication.Service.ForegroundService;
-import com.example.MyApplication.Thread.CaptureThread;
-import com.example.MyApplication.Thread.ConsumerThread;
-
-import java.util.LinkedList;
-import java.util.Queue;
+import com.example.MyApplication.View.CameraSurfaceView;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final int CONTENT_LOGO = 0;
+    private static final int CONTENT_PREVIEW = 1;
+    private int content = CONTENT_LOGO;
 
     private Button editInfoButton;
     private Button serviceToggleButton;
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView mainImageView;
     private FrameLayout frameLayout;
-    //private CameraSurfaceView cameraSurfaceView;
+    private CameraSurfaceView cameraSurfaceView;
     private TextView stateText;
 
     LinearLayout linearLayout;
@@ -78,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        previewToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (content == CONTENT_PREVIEW) {
+                    startService();
+                    closePreview();
+                } else {
+                    stopService();
+                    openPreview();
+                }
+            }
+        });
     }
 
     private void startService() {
@@ -86,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         stateText.setText(getString(R.string.STATE_RUNNING));
         serviceToggleButton.setText(getString(R.string.STOP_SERVICE));
         startAnimation();
+        while (!ForegroundService.isServiceRunning(getApplication()));
     }
 
     private void stopService() {
@@ -94,6 +105,28 @@ public class MainActivity extends AppCompatActivity {
         stateText.setText(getString(R.string.STATE_STOP));
         serviceToggleButton.setText(getString(R.string.START_SERVICE));
         stopAnimation();
+        while (ForegroundService.isServiceRunning(getApplication()));
+    }
+
+    private void openPreview() {
+        hideAllButtons();
+        content = CONTENT_PREVIEW;
+        mainImageView.setVisibility(View.GONE);
+        cameraSurfaceView = new CameraSurfaceView(MainActivity.this);
+        frameLayout.addView(cameraSurfaceView);
+        frameLayout.setVisibility(View.VISIBLE);
+        previewToggleButton.setVisibility(View.VISIBLE);
+        previewToggleButton.setText(getString(R.string.CLOSE_PREVIEW));
+        stateText.setVisibility(View.VISIBLE);
+    }
+
+    private void closePreview() {
+        showAllButtons();
+        content = CONTENT_LOGO;
+        frameLayout.setVisibility(View.GONE);
+        frameLayout.removeView(cameraSurfaceView);
+        mainImageView.setVisibility(View.VISIBLE);
+        previewToggleButton.setText(getString(R.string.OPEN_PREVIEW));
     }
 
     private void startAnimation() {
@@ -104,5 +137,19 @@ public class MainActivity extends AppCompatActivity {
     private void stopAnimation() {
         Glide.with(this).load(R.raw.stop).circleCrop().into(mainImageView);
         animationDrawable.stop();
+    }
+
+    private void showAllButtons() {
+        editInfoButton.setVisibility(View.VISIBLE);
+        serviceToggleButton.setVisibility(View.VISIBLE);
+        previewToggleButton.setVisibility(View.VISIBLE);
+        stateText.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAllButtons() {
+        editInfoButton.setVisibility(View.GONE);
+        serviceToggleButton.setVisibility(View.GONE);
+        previewToggleButton.setVisibility(View.GONE);
+        stateText.setVisibility(View.INVISIBLE);
     }
 }
