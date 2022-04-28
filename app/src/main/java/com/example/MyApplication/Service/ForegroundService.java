@@ -31,7 +31,6 @@ public class ForegroundService extends Service {
     private Queue<byte[]> queue = new LinkedList<>();
     private CaptureThread captureThread;
     private ConsumerThread consumerThread;
-    private static boolean running = true;
     int value = 0;
 
     public ForegroundService() { }
@@ -52,10 +51,9 @@ public class ForegroundService extends Service {
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestory");
+        super.onDestroy();
         captureThread.interrupt();
         consumerThread.interrupt();
-        captureThread.onPause();
-        super.onDestroy();
         task.cancel(true);
     }
 
@@ -70,10 +68,6 @@ public class ForegroundService extends Service {
 
         initializeNotification(); // generate foreground
         return START_NOT_STICKY;
-    }
-
-    public static boolean isRunning() {
-        return running;
     }
 
     public static boolean isServiceRunning(Context context) {
@@ -124,7 +118,7 @@ public class ForegroundService extends Service {
         protected Integer doInBackground(Integer... values) {
             while(isCancelled() == false) {
                 try {
-                    Log.e(TAG, value + "s");
+                    Log.e(TAG, value * 10 + "s");
                     Thread.sleep(10000);
                     value++;
                 } catch (InterruptedException ex) { }

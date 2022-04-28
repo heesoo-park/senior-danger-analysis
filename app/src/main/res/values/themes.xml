@@ -71,13 +71,13 @@
         <item name="android:fontFamily">@font/sb_aggro_l</item>
     </style>
 
-    <style name="MainActivityImageViewSize">
+    <style name="MainActivityImageViewStyle">
         <item name="android:layout_width">450dp</item>
         <item name="android:layout_height">450dp</item>
         <item name="android:fontFamily">@font/sb_aggro_l</item>
     </style>
 
-    <style name="MainActivityPreviewSize">
+    <style name="MainActivityPreviewStyle">
         <item name="android:layout_width">600dp</item>
         <item name="android:layout_height">450dp</item>
         <item name="android:fontFamily">@font/sb_aggro_l</item>

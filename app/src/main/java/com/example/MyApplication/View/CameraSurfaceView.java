@@ -39,7 +39,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        camera = Camera.open(0);
+        camera = Camera.open(mCameraID);
 
         // retrieve camera's info.
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
@@ -76,9 +76,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        camera.stopPreview();
-        camera.release();
-        camera = null;
+        if (camera != null) {
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        }
     }
 
     /**

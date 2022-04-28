@@ -23,7 +23,7 @@ public class ConsumerThread extends Thread {
 
     @Override
     public void run() {
-        Log.e(TAG, "Capture Thread Start...");
+        Log.e(TAG, "Consumer Thread Start...");
         while (!Thread.currentThread().isInterrupted()) {
             if (queue.isEmpty()) {
                 continue;

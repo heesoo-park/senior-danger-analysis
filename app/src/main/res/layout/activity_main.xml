@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
@@ -10,49 +10,40 @@
     android:background="@drawable/background"
     tools:context=".MainActivity">
 
-    <!-- empty -->
-    <LinearLayout
-        android:layout_width="350dp"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-    </LinearLayout>
-
     <!-- Logo & Preview -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="30px"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="30px">
 
         <ImageView
             android:id="@+id/mainImageView"
+            style="@style/MainActivityImageViewStyle"
             android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            style="@style/MainActivityImageViewSize" />
+            android:layout_marginBottom="30dp" />
 
         <FrameLayout
             android:id="@+id/frameLayout"
+            style="@style/MainActivityPreviewStyle"
             android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            style="@style/MainActivityPreviewSize" />
+            android:layout_marginBottom="30dp" />
 
         <TextView
             android:id="@+id/stateText"
+            style="@style/MainActivityStateStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/STATE_STOP"
-            style="@style/MainActivityStateStyle" />
+            android:text="@string/STATE_STOP" />
     </LinearLayout>
 
     <!-- Button Container -->
     <LinearLayout
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="30dp"
-        android:gravity="right"
         android:orientation="vertical">
 
         <Button
@@ -72,4 +63,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

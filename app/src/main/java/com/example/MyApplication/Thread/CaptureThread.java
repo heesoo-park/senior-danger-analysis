@@ -6,6 +6,7 @@ import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import com.example.MyApplication.MainActivity;
 import com.example.MyApplication.Service.ForegroundService;
@@ -21,6 +22,7 @@ public class CaptureThread extends Thread {
     private SurfaceTexture surfaceTexture;
     private static final int PICTURE_WIDTH = 320;
     private static final int PICTURE_HEIGHT = 240;
+    private static final int FRAME_RATE = 10;
     private Queue<byte[]> queue;
 
     private long beforeTime;
@@ -32,6 +34,7 @@ public class CaptureThread extends Thread {
         this.queue = queue;
         surfaceTexture = new SurfaceTexture(10);
         surfaceTexture.setDefaultBufferSize(PICTURE_WIDTH, PICTURE_HEIGHT);
+        Log.e(TAG, "캡쳐 스레드 생성자");
         try {
             this.camera.setPreviewTexture(surfaceTexture);
         } catch (IOException e) {
@@ -43,13 +46,17 @@ public class CaptureThread extends Thread {
         params.setPictureSize(PICTURE_WIDTH, PICTURE_HEIGHT);
         params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         params.setPictureFormat(ImageFormat.JPEG);
+        params.setPreviewFrameRate(FRAME_RATE);
         camera.setParameters(params);
         camera.startPreview();
     }
 
-    public void onPause() {
+    @Override
+    public void interrupt() {
+        super.interrupt();
         if (camera != null) {
             camera.stopPreview();
+            camera.setPreviewCallback(null);
             camera.release();
             camera = null;
         }

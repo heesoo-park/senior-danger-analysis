@@ -108,6 +108,7 @@ public class AnalysisThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Log.e(TAG, "5초 지남 : " + num + " Thread 모델 분석이 끝났다고 가정.");
         Log.e(TAG, "Analysis Thread " + num + " Finish...");
     }
 }

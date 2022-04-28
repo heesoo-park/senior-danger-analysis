@@ -1,15 +1,20 @@
 package com.example.MyApplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,12 +39,50 @@ public class MainActivity extends AppCompatActivity {
     private CameraSurfaceView cameraSurfaceView;
     private TextView stateText;
 
-    LinearLayout linearLayout;
-    AnimationDrawable animationDrawable;
+    private RelativeLayout relativeLayout;
+    private AnimationDrawable animationDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
+        } else {
+            initLayout();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode==200 && grantResults.length>0){
+            boolean permissionGranted=true;
+            for(int result : grantResults){
+                if(result != PackageManager.PERMISSION_GRANTED){
+                    // 사용자가 권한을 거절했다.
+                    permissionGranted=false;
+                    break;
+                }
+            }
+
+            if(permissionGranted){
+                // 권한 요청을 수락한 경우에 layout을 전개한다.
+                initLayout();
+            }else{
+                Toast.makeText(this,
+                        "권한을 허용해야 SDA 앱을 이용하실 수 있습니다.",
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
+
+    private void initLayout() {
         setContentView(R.layout.activity_main);
 
         editInfoButton = (Button) findViewById(R.id.editInfoButton);
@@ -51,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
         frameLayout.setVisibility(View.GONE);
         stateText = (TextView) findViewById(R.id.stateText);
 
-        linearLayout = (LinearLayout) findViewById(R.id.background);
-        animationDrawable = (AnimationDrawable) linearLayout.getBackground();
+        relativeLayout = (RelativeLayout) findViewById(R.id.background);
+        animationDrawable = (AnimationDrawable) relativeLayout.getBackground();
         animationDrawable.setEnterFadeDuration(2000);
         animationDrawable.setExitFadeDuration(4000);
 
