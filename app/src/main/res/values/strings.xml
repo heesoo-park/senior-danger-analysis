@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">MyApplication</string>
     <string name="team_name">SDA</string>
-    <string name="STATE_STOP">서비스 멈춤</string>
-    <string name="STATE_RUNNING">서비스 동작 중</string>
-    <string name="EDIT_INFO">button collections</string>
+    <string name="STATE_STOP">멈춤</string>
+    <string name="STATE_RUNNING">동작 중</string>
+    <string name="EDIT_INFO">액티비티</string>
     <string name="START_SERVICE">서비스 동작</string>
     <string name="STOP_SERVICE">서비스 중지</string>
     <string name="OPEN_PREVIEW">카메라 보기</string>

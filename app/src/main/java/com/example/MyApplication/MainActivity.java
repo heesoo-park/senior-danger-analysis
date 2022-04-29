@@ -6,45 +6,49 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.MyApplication.Activity.PreviewActivity;
+import com.example.MyApplication.Activity.SplashActivity;
 import com.example.MyApplication.Activity.TempActivity;
 import com.example.MyApplication.Service.ForegroundService;
 import com.example.MyApplication.View.CameraSurfaceView;
 
 
 public class MainActivity extends AppCompatActivity {
+    public static Context context;
+
     private static final String TAG = "MainActivity";
-    private static final int CONTENT_LOGO = 0;
-    private static final int CONTENT_PREVIEW = 1;
-    private int content = CONTENT_LOGO;
 
     private Button editInfoButton;
-    private Button serviceToggleButton;
-    private Button previewToggleButton;
+    private Button openPreviewButton;
 
     private ImageView mainImageView;
-    private FrameLayout frameLayout;
-    private CameraSurfaceView cameraSurfaceView;
-    private TextView stateText;
 
     private RelativeLayout relativeLayout;
     private AnimationDrawable animationDrawable;
 
+    private Switch serviceToggleSwitch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -53,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
         } else {
             initLayout();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!ForegroundService.isServiceRunning(getApplication())) {
+            startService();
+        } else {
+            startAnimation();
+            serviceToggleSwitch.setChecked(true);
         }
     }
 
@@ -71,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if(permissionGranted){
-                // 권한 요청을 수락한 경우에 layout을 전개한다.
                 initLayout();
             }else{
                 Toast.makeText(this,
@@ -86,22 +100,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         editInfoButton = (Button) findViewById(R.id.editInfoButton);
-        serviceToggleButton = (Button) findViewById(R.id.serviceToggleButton);
-        previewToggleButton = (Button) findViewById(R.id.previewToggleButton);
+        openPreviewButton = (Button) findViewById(R.id.openPreviewButton);
 
         mainImageView = (ImageView) findViewById(R.id.mainImageView);
-        frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
-        frameLayout.setVisibility(View.GONE);
-        stateText = (TextView) findViewById(R.id.stateText);
 
         relativeLayout = (RelativeLayout) findViewById(R.id.background);
         animationDrawable = (AnimationDrawable) relativeLayout.getBackground();
         animationDrawable.setEnterFadeDuration(2000);
         animationDrawable.setExitFadeDuration(4000);
 
-        if (!ForegroundService.isServiceRunning(this)) {
-            startService();
-        }
+        serviceToggleSwitch = (Switch) findViewById(R.id.serviceToggleSwitch);
+        serviceToggleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startService();
+                } else {
+                    stopService();
+                }
+            }
+        });
         editInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,67 +127,30 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        serviceToggleButton.setOnClickListener(new View.OnClickListener() {
+        openPreviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!ForegroundService.isServiceRunning(getApplication())) {
-                    startService();
-                } else {
+                if (ForegroundService.isServiceRunning(getApplication())) {
                     stopService();
                 }
-            }
-        });
-        previewToggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (content == CONTENT_PREVIEW) {
-                    startService();
-                    closePreview();
-                } else {
-                    stopService();
-                    openPreview();
-                }
+                Intent intent = new Intent(MainActivity.this, PreviewActivity.class);
+                startActivity(intent);
             }
         });
     }
 
-    private void startService() {
+    public void startService() {
         Toast.makeText(getApplicationContext(), getString(R.string.START_SERVICE), Toast.LENGTH_SHORT).show();
         startService(new Intent(getApplication(), ForegroundService.class));
-        stateText.setText(getString(R.string.STATE_RUNNING));
-        serviceToggleButton.setText(getString(R.string.STOP_SERVICE));
+        serviceToggleSwitch.setChecked(true);
         startAnimation();
-        while (!ForegroundService.isServiceRunning(getApplication()));
     }
 
     private void stopService() {
         Toast.makeText(getApplicationContext(), getString(R.string.STOP_SERVICE), Toast.LENGTH_SHORT).show();
         stopService(new Intent(getApplication(), ForegroundService.class));
-        stateText.setText(getString(R.string.STATE_STOP));
-        serviceToggleButton.setText(getString(R.string.START_SERVICE));
+        serviceToggleSwitch.setChecked(false);
         stopAnimation();
-        while (ForegroundService.isServiceRunning(getApplication()));
-    }
-
-    private void openPreview() {
-        hideAllButtons();
-        content = CONTENT_PREVIEW;
-        mainImageView.setVisibility(View.GONE);
-        cameraSurfaceView = new CameraSurfaceView(MainActivity.this);
-        frameLayout.addView(cameraSurfaceView);
-        frameLayout.setVisibility(View.VISIBLE);
-        previewToggleButton.setVisibility(View.VISIBLE);
-        previewToggleButton.setText(getString(R.string.CLOSE_PREVIEW));
-        stateText.setVisibility(View.VISIBLE);
-    }
-
-    private void closePreview() {
-        showAllButtons();
-        content = CONTENT_LOGO;
-        frameLayout.setVisibility(View.GONE);
-        frameLayout.removeView(cameraSurfaceView);
-        mainImageView.setVisibility(View.VISIBLE);
-        previewToggleButton.setText(getString(R.string.OPEN_PREVIEW));
     }
 
     private void startAnimation() {
@@ -180,19 +161,5 @@ public class MainActivity extends AppCompatActivity {
     private void stopAnimation() {
         Glide.with(this).load(R.raw.stop).circleCrop().into(mainImageView);
         animationDrawable.stop();
-    }
-
-    private void showAllButtons() {
-        editInfoButton.setVisibility(View.VISIBLE);
-        serviceToggleButton.setVisibility(View.VISIBLE);
-        previewToggleButton.setVisibility(View.VISIBLE);
-        stateText.setVisibility(View.VISIBLE);
-    }
-
-    private void hideAllButtons() {
-        editInfoButton.setVisibility(View.GONE);
-        serviceToggleButton.setVisibility(View.GONE);
-        previewToggleButton.setVisibility(View.GONE);
-        stateText.setVisibility(View.INVISIBLE);
     }
 }

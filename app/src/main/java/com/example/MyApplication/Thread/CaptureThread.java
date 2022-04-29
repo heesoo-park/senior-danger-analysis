@@ -20,8 +20,10 @@ public class CaptureThread extends Thread {
     private Camera camera;
     private int count = 0;
     private SurfaceTexture surfaceTexture;
-    private static final int PICTURE_WIDTH = 320;
-    private static final int PICTURE_HEIGHT = 240;
+    private static final int PICTURE_WIDTH = 480;
+    private static final int PICTURE_HEIGHT = 320;
+    private static final int MODEL_INPUT_PICTURE_WIDTH = 480;
+    private static final int MODEL_INPUT_PICTURE_HEIGHT = 320;
     private static final int FRAME_RATE = 10;
     private Queue<byte[]> queue;
 
@@ -43,7 +45,7 @@ public class CaptureThread extends Thread {
 
         Camera.Parameters params = camera.getParameters();
         params.setPreviewSize(PICTURE_WIDTH, PICTURE_HEIGHT);
-        params.setPictureSize(PICTURE_WIDTH, PICTURE_HEIGHT);
+        params.setPictureSize(MODEL_INPUT_PICTURE_WIDTH, MODEL_INPUT_PICTURE_HEIGHT);
         params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         params.setPictureFormat(ImageFormat.JPEG);
         params.setPreviewFrameRate(FRAME_RATE);
@@ -73,7 +75,7 @@ public class CaptureThread extends Thread {
                     if (baos == null) {
                         return;
                     }
-                    Log.e(TAG, "image capture! " + count + ", Queue Size: " + queue.size() + ", Bytes: " + baos);
+                    Log.e(TAG, "image capture! " + count + ", Queue Size: " + queue.size() + ", Bytes: " + baos + ", Data Length: " + data.length);
                     if (count % 30 == 0) {
                         if (count == 0) {
                             beforeTime = System.currentTimeMillis();

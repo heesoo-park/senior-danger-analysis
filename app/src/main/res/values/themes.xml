@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.CameraTest" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -14,9 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
     <!-- Common Styles-->
@@ -55,31 +53,33 @@
 
     <!-- Main Activity Styles-->
     <style name="MainActivityButtonStyle">
-        <item name="android:textSize">40dp</item>
+        <item name="android:textSize">45dp</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textAlignment">textEnd</item>
+        <item name="android:textAlignment">center</item>
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">280dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
         <item name="android:fontFamily">@font/sb_aggro_l</item>
     </style>
 
     <style name="MainActivityStateStyle">
-        <item name="android:textSize">70dp</item>
+        <item name="android:textSize">60dp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:fontFamily">@font/sb_aggro_l</item>
     </style>
 
     <style name="MainActivityImageViewStyle">
-        <item name="android:layout_width">450dp</item>
-        <item name="android:layout_height">450dp</item>
+        <item name="android:layout_width">430dp</item>
+        <item name="android:layout_height">430dp</item>
         <item name="android:fontFamily">@font/sb_aggro_l</item>
     </style>
 
-    <style name="MainActivityPreviewStyle">
-        <item name="android:layout_width">600dp</item>
-        <item name="android:layout_height">450dp</item>
+    <style name="CameraPreviewStyle">
+        <item name="android:layout_width">640dp</item>
+        <item name="android:layout_height">480dp</item>
         <item name="android:fontFamily">@font/sb_aggro_l</item>
     </style>
 </resources>
