@@ -6,10 +6,6 @@ import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.util.Log;
-import android.widget.FrameLayout;
-
-import com.example.MyApplication.MainActivity;
-import com.example.MyApplication.Service.ForegroundService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

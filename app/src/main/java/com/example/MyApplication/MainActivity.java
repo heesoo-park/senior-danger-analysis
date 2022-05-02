@@ -6,49 +6,55 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.MyApplication.Activity.InformationActivity;
 import com.example.MyApplication.Activity.PreviewActivity;
-import com.example.MyApplication.Activity.SplashActivity;
 import com.example.MyApplication.Activity.TempActivity;
 import com.example.MyApplication.Service.ForegroundService;
-import com.example.MyApplication.View.CameraSurfaceView;
-
 
 public class MainActivity extends AppCompatActivity {
-    public static Context context;
-
     private static final String TAG = "MainActivity";
 
     private Button editInfoButton;
     private Button openPreviewButton;
+    private Button appInfoButton;
 
     private ImageView mainImageView;
+    private TextView serviceGuideTextView;
 
     private RelativeLayout relativeLayout;
     private AnimationDrawable animationDrawable;
 
-    private Switch serviceToggleSwitch;
+    private ImageView serviceStateImageView;
+    private TextView serviceStateTextView;
+
+    private Button colorChangeYellowButton;
+    private Button colorChangeRedButton;
+    private Button colorChangeBlackButton;
+    private Button colorChangeRainbowButton;
+
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+
+    private int backgroundColor = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -63,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        refreshBackground();
         if (!ForegroundService.isServiceRunning(getApplication())) {
             startService();
         } else {
             startAnimation();
-            serviceToggleSwitch.setChecked(true);
         }
     }
 
@@ -99,21 +105,35 @@ public class MainActivity extends AppCompatActivity {
     private void initLayout() {
         setContentView(R.layout.activity_main);
 
-        editInfoButton = (Button) findViewById(R.id.editInfoButton);
+        editInfoButton =  (Button) findViewById(R.id.editInfoButton);
         openPreviewButton = (Button) findViewById(R.id.openPreviewButton);
+        appInfoButton = (Button) findViewById(R.id.appInfoButton);
 
         mainImageView = (ImageView) findViewById(R.id.mainImageView);
+        serviceGuideTextView = (TextView) findViewById(R.id.serviceGuideTextView);
 
         relativeLayout = (RelativeLayout) findViewById(R.id.background);
-        animationDrawable = (AnimationDrawable) relativeLayout.getBackground();
-        animationDrawable.setEnterFadeDuration(2000);
-        animationDrawable.setExitFadeDuration(4000);
 
-        serviceToggleSwitch = (Switch) findViewById(R.id.serviceToggleSwitch);
-        serviceToggleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        serviceStateImageView = (ImageView) findViewById(R.id.serviceStateImageView);
+        serviceStateTextView = (TextView) findViewById(R.id.serviceStateTextView);
+
+        colorChangeYellowButton = (Button) findViewById(R.id.colorChangeYellowButton);
+        colorChangeRedButton = (Button) findViewById(R.id.colorChangeRedButton);
+        colorChangeBlackButton = (Button) findViewById(R.id.colorChangeBlackButton);
+        colorChangeRainbowButton = (Button) findViewById(R.id.colorChangeRainbowButton);
+
+        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        editor = pref.edit();
+
+        if ((pref != null) && (!pref.contains("theme_color"))) {
+            editor.putInt("theme_color", R.drawable.background_yellow);
+            editor.commit();
+        }
+
+        mainImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+            public void onClick(View view) {
+                if (!ForegroundService.isServiceRunning(getApplication())) {
                     startService();
                 } else {
                     stopService();
@@ -137,29 +157,104 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        openPreviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ForegroundService.isServiceRunning(getApplication())) {
+                    stopService();
+                }
+                Intent intent = new Intent(MainActivity.this, PreviewActivity.class);
+                startActivity(intent);
+            }
+        });
+        appInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, InformationActivity.class);
+                startActivity(intent);
+            }
+        });
+        colorChangeRedButton.setOnClickListener(view -> colorChangeRed());
+        colorChangeYellowButton.setOnClickListener(view -> colorChangeYellow());
+        colorChangeBlackButton.setOnClickListener(view -> colorChangeBlack());
+        colorChangeRainbowButton.setOnClickListener(view -> colorChangeRainbow());
     }
 
-    public void startService() {
-        Toast.makeText(getApplicationContext(), getString(R.string.START_SERVICE), Toast.LENGTH_SHORT).show();
+    private void startService() {
+        Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
         startService(new Intent(getApplication(), ForegroundService.class));
-        serviceToggleSwitch.setChecked(true);
         startAnimation();
     }
 
     private void stopService() {
-        Toast.makeText(getApplicationContext(), getString(R.string.STOP_SERVICE), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "서비스 중지", Toast.LENGTH_SHORT).show();
         stopService(new Intent(getApplication(), ForegroundService.class));
-        serviceToggleSwitch.setChecked(false);
         stopAnimation();
     }
 
     private void startAnimation() {
-        Glide.with(this).load(R.raw.running).circleCrop().into(mainImageView);
+        Glide.with(this).load(R.drawable.service_running).circleCrop().into(mainImageView);
+        serviceStateImageView.setImageResource(R.drawable.service_state_on);
+        serviceStateTextView.setText("동작");
         animationDrawable.start();
+        serviceGuideTextView.setText("그림을 누르면 서비스가 정지합니다.");
     }
 
     private void stopAnimation() {
-        Glide.with(this).load(R.raw.stop).circleCrop().into(mainImageView);
+        Glide.with(this).load(R.drawable.service_stop).circleCrop().into(mainImageView);
+        serviceStateImageView.setImageResource(R.drawable.service_state_off);
+        serviceStateTextView.setText("정지");
         animationDrawable.stop();
+        serviceGuideTextView.setText("그림을 누르면 서비스가 동작합니다.");
+    }
+
+    // theme changes
+    private void colorChangeRed() {
+        if (backgroundColor == R.drawable.background_red)
+            return;
+
+        backgroundColor = R.drawable.background_red;
+        refreshBackground();
+    }
+
+    private void colorChangeYellow() {
+        if (backgroundColor == R.drawable.background_yellow)
+            return;
+
+        backgroundColor = R.drawable.background_yellow;
+        refreshBackground();
+    }
+
+    private void colorChangeBlack() {
+        if (backgroundColor == R.drawable.background_black)
+            return;
+
+        backgroundColor = R.drawable.background_black;
+        refreshBackground();
+    }
+
+    private void colorChangeRainbow() {
+        if (backgroundColor == R.drawable.background_rainbow)
+            return;
+
+        backgroundColor = R.drawable.background_rainbow;
+        refreshBackground();
+    }
+
+    private void refreshBackground() {
+        if (backgroundColor == -1)
+            backgroundColor = pref.getInt("theme_color", R.drawable.background_yellow);
+
+        if (pref != null) {
+            editor.putInt("theme_color", backgroundColor);
+            editor.commit();
+        }
+        relativeLayout.setBackground(getDrawable(backgroundColor));
+        animationDrawable = (AnimationDrawable) relativeLayout.getBackground();
+        animationDrawable.setEnterFadeDuration(0);
+        animationDrawable.setExitFadeDuration(4000);
+        if (ForegroundService.isServiceRunning(getApplication())) {
+            animationDrawable.start();
+        }
     }
 }

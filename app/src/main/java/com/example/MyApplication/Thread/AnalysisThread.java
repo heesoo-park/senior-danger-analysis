@@ -9,7 +9,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.example.MyApplication.Library.AnimatedGifEncoder;
-import com.example.MyApplication.Service.ForegroundService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,7 +22,7 @@ import java.util.Vector;
 public class AnalysisThread extends Thread {
     private static final String TAG = "AnalysisThread";
     Vector<byte[]> frames;
-    private int num;
+    private final int num;
 
     public AnalysisThread(int num, Vector<byte[]> frames) {
         this.num = num;

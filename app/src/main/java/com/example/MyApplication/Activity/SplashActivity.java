@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.bumptech.glide.Glide;
 import com.example.MyApplication.MainActivity;
 import com.example.MyApplication.R;
 
@@ -18,8 +16,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        ImageView splashGifImage = (ImageView) findViewById(R.id.splash_gif_image);
-        Glide.with(this).load(R.raw.splash).into(splashGifImage);
+        ImageView splashImageView = (ImageView) findViewById(R.id.splashImageView);
+        splashImageView.setImageResource(R.drawable.splash);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -29,6 +27,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 100);
+        }, 2000);
     }
 }

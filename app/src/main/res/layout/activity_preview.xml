@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
+    android:background="@drawable/background_gradient_yellow"
     tools:context=".Activity.PreviewActivity">
-
-
 
     <LinearLayout
         android:id="@+id/previewSection"
@@ -18,10 +16,10 @@
         android:orientation="vertical"
         android:gravity="center">
 
-
         <FrameLayout
             android:id="@+id/frameLayout"
-            style="@style/CameraPreviewStyle"
+            android:layout_width="586dp"
+            android:layout_height="440dp"
             android:layout_gravity="center"
             android:elevation="20dp"
             android:background="@color/black"
@@ -30,8 +28,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="50dp"
-            android:text="현재 카메라에 비추는 영역을 분석할 수 있습니다."
+            android:textSize="50sp"
+            android:gravity="center"
+            android:fontFamily="@font/sb_aggro_l"
+            android:textColor="@color/black"
+            android:text="@string/preview_activity_notice_msg"
             android:layout_marginBottom="50dp"/>
 
     </LinearLayout>
@@ -47,10 +48,8 @@
 
         <Button
             android:id="@+id/closePreviewButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             style="@style/MainActivityButtonStyle"
-            android:text="카메라 닫기"/>
+            android:text="@string/btn_text_close_preview"/>
 
     </LinearLayout>
 
