@@ -1,4 +1,4 @@
-package com.example.MyApplication;
+package com.example.SDA;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,10 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.MyApplication.Activity.InformationActivity;
-import com.example.MyApplication.Activity.PreviewActivity;
-import com.example.MyApplication.Activity.TempActivity;
-import com.example.MyApplication.Service.ForegroundService;
+import com.example.SDA.Activity.InformationActivity;
+import com.example.SDA.Activity.PreviewActivity;
+import com.example.SDA.Activity.TempActivity;
+import com.example.SDA.Service.ForegroundService;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

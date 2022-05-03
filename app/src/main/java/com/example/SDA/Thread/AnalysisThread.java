@@ -1,4 +1,4 @@
-package com.example.MyApplication.Thread;
+package com.example.SDA.Thread;
 
 import static android.os.Environment.DIRECTORY_DOCUMENTS;
 import static android.os.Environment.DIRECTORY_PICTURES;
@@ -8,7 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import com.example.MyApplication.Library.AnimatedGifEncoder;
+import com.example.SDA.Library.AnimatedGifEncoder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

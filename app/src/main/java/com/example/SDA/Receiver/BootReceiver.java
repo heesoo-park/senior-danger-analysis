@@ -1,11 +1,11 @@
-package com.example.MyApplication.Receiver;
+package com.example.SDA.Receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import com.example.MyApplication.Service.ForegroundService;
+import com.example.SDA.Service.ForegroundService;
 
 public class BootReceiver extends BroadcastReceiver {
     public static final String ACTION_RESTART_PERSISTENTSERVICE = "ACTION.RESTART.PersistentService";

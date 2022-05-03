@@ -1,4 +1,4 @@
-package com.example.MyApplication;
+package com.example.SDA;
 
 import org.junit.Test;
 

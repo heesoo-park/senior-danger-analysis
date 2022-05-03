@@ -1,4 +1,4 @@
-package com.example.MyApplication.Library;
+package com.example.SDA.Library;
 
 /**
  * AnimatedGifEncoder

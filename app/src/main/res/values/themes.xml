@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MyApplication" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.SDA" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#ffd012</item>
         <item name="colorPrimaryVariant">#000000</item>

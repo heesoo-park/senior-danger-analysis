@@ -1,4 +1,4 @@
-package com.example.MyApplication.Thread;
+package com.example.SDA.Thread;
 
 import android.util.Log;
 

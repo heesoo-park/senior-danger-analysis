@@ -1,4 +1,4 @@
-package com.example.MyApplication.Activity;
+package com.example.SDA.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,8 +6,9 @@ import android.os.Handler;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.MyApplication.MainActivity;
-import com.example.MyApplication.R;
+
+import com.example.SDA.MainActivity;
+import com.example.SDA.R;
 
 public class SplashActivity extends AppCompatActivity {
 

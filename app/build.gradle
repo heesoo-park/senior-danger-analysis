@@ -6,7 +6,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.myapplication"
+        applicationId "com.example.SDA"
         minSdk 21
         targetSdk 25
         versionCode 1

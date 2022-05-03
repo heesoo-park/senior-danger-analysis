@@ -1,16 +1,14 @@
-package com.example.MyApplication.Activity;
+package com.example.SDA.Activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.MyApplication.MainActivity;
-import com.example.MyApplication.R;
-import com.example.MyApplication.View.CameraSurfaceView;
+import com.example.SDA.R;
+import com.example.SDA.View.CameraSurfaceView;
 
 public class PreviewActivity extends AppCompatActivity {
     private CameraSurfaceView cameraSurfaceView;

@@ -1,4 +1,4 @@
-package com.example.MyApplication.Service;
+package com.example.SDA.Service;
 
 import android.app.ActivityManager;
 import android.app.Notification;
@@ -16,10 +16,10 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.example.MyApplication.MainActivity;
-import com.example.MyApplication.R;
-import com.example.MyApplication.Thread.CaptureThread;
-import com.example.MyApplication.Thread.ConsumerThread;
+import com.example.SDA.MainActivity;
+import com.example.SDA.R;
+import com.example.SDA.Thread.CaptureThread;
+import com.example.SDA.Thread.ConsumerThread;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -81,11 +81,12 @@ public class ForegroundService extends Service {
 
     public void initializeNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1");
-        builder.setSmallIcon(R.mipmap.ic_main_foreground);
+        builder.setSmallIcon(R.drawable.small_icon);
         NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle();
         style.bigText("현재 SDA 어플리케이션이 동작 중입니다.");
         style.setBigContentTitle(null);
         style.setSummaryText("카메라 동작 중");
+        builder.setColor(0xff123456);
         builder.setContentText(null);
         builder.setContentTitle(null);
         builder.setOngoing(true);
