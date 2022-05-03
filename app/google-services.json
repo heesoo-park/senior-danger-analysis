@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "891827620778",
+    "firebase_url": "https://senior-danger-analysis-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "senior-danger-analysis",
+    "storage_bucket": "senior-danger-analysis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891827620778:android:b5cb8e91d52a599db0f9d3",
+        "android_client_info": {
+          "package_name": "com.example.SDA"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891827620778-jnaot04btvhkoe7lf1vor5hehaemmbbi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.SDA",
+            "certificate_hash": "ae7af06665e5a1766112d03e229235d6cf96102f"
+          }
+        },
+        {
+          "client_id": "891827620778-kh4rrekhdsa4o2fd926fs7lm7c8mqnn1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDqJ4cXBtEUqsqLjkSqBKtZzQB-d4gsYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891827620778-kh4rrekhdsa4o2fd926fs7lm7c8mqnn1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -69,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         refreshBackground();
         if (!ForegroundService.isServiceRunning(getApplication())) {
             startService();
@@ -80,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if(requestCode==200 && grantResults.length>0){
             boolean permissionGranted=true;
             for(int result : grantResults){
@@ -257,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("button_color", buttonColor);
             editor.commit();
         }
+
         editInfoButton.setBackground(getDrawable(buttonColor));
         openPreviewButton.setBackground(getDrawable(buttonColor));
         appInfoButton.setBackground(getDrawable(buttonColor));

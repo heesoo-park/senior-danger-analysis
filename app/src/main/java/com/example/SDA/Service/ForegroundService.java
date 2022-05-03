@@ -81,7 +81,7 @@ public class ForegroundService extends Service {
 
     public void initializeNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1");
-        builder.setSmallIcon(R.drawable.small_icon);
+        builder.setSmallIcon(R.drawable.notification_icon);
         NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle();
         style.bigText("현재 SDA 어플리케이션이 동작 중입니다.");
         style.setBigContentTitle(null);
