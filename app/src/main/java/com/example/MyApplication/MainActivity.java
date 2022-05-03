@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
 
     private int backgroundColor = -1;
+    private int buttonColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +126,9 @@ public class MainActivity extends AppCompatActivity {
         pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         editor = pref.edit();
 
-        if ((pref != null) && (!pref.contains("theme_color"))) {
+        if ((pref != null) && !pref.contains("theme_color")) {
             editor.putInt("theme_color", R.drawable.background_yellow);
+            editor.putInt("button_color", R.drawable.button_yellow);
             editor.commit();
         }
 
@@ -214,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         backgroundColor = R.drawable.background_red;
+        buttonColor = R.drawable.button_red;
         refreshBackground();
     }
 
@@ -222,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         backgroundColor = R.drawable.background_yellow;
+        buttonColor = R.drawable.button_yellow;
         refreshBackground();
     }
 
@@ -230,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         backgroundColor = R.drawable.background_black;
+        buttonColor = R.drawable.button_white;
         refreshBackground();
     }
 
@@ -238,17 +243,24 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         backgroundColor = R.drawable.background_rainbow;
+        buttonColor = R.drawable.button_mix;
         refreshBackground();
     }
 
     private void refreshBackground() {
-        if (backgroundColor == -1)
+        if (backgroundColor == -1 || buttonColor == -1) {
             backgroundColor = pref.getInt("theme_color", R.drawable.background_yellow);
+            buttonColor = pref.getInt("button_color", R.drawable.button_yellow);
+        }
 
         if (pref != null) {
             editor.putInt("theme_color", backgroundColor);
+            editor.putInt("button_color", buttonColor);
             editor.commit();
         }
+        editInfoButton.setBackground(getDrawable(buttonColor));
+        openPreviewButton.setBackground(getDrawable(buttonColor));
+        appInfoButton.setBackground(getDrawable(buttonColor));
         relativeLayout.setBackground(getDrawable(backgroundColor));
         animationDrawable = (AnimationDrawable) relativeLayout.getBackground();
         animationDrawable.setEnterFadeDuration(0);

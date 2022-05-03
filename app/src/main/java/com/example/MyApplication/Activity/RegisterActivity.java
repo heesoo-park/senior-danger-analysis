@@ -17,10 +17,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText editTextRegisterPwd;
     EditText editTextRegisterName;
     EditText editTextRegisterPhone;
-    EditText editTextRegisterEmail;
     EditText editTextRegisterAddress;
-    CheckBox checkBoxRegisterSenior;
-    CheckBox checkBoxRegisterCare;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,27 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
         editTextRegisterPwd = (EditText) findViewById(R.id.editTextRegisterPwd);
         editTextRegisterName = (EditText) findViewById(R.id.editTextRegisterName);
         editTextRegisterPhone = (EditText) findViewById(R.id.editTextRegisterPhone);
-        editTextRegisterEmail = (EditText) findViewById(R.id.editTextRegisterEmail);
         editTextRegisterAddress = (EditText) findViewById(R.id.editTextRegisterAddress);
-        checkBoxRegisterSenior = (CheckBox) findViewById(R.id.checkBoxRegisterSenior);
-        checkBoxRegisterCare = (CheckBox) findViewById(R.id.checkBoxRegisterCare);
 
-        checkBoxRegisterSenior.setOnClickListener(new CheckBox.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
-                    checkBoxRegisterCare.setChecked(false);
-                }
-            }
-        });
-        checkBoxRegisterCare.setOnClickListener(new CheckBox.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
-                    checkBoxRegisterSenior.setChecked(false);
-                }
-            }
-        });
         registerSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,16 +45,10 @@ public class RegisterActivity extends AppCompatActivity {
         String pwd = editTextRegisterPwd.getText().toString();
         String name = editTextRegisterName.getText().toString();
         String phone = editTextRegisterPhone.getText().toString();
-        String email = editTextRegisterEmail.getText().toString();
         String address = editTextRegisterAddress.getText().toString();
         String category = null;
-        if (checkBoxRegisterSenior.isChecked()) {
-            category = "Senior";
-        } else {
-            category = "Care";
-        }
         Toast.makeText(getApplicationContext(), "Submit Button Event\nID: " + id + "\nPWD: "+ pwd + "\nCategory: "+ category
-                + "\nName: "+ name + "\nPhone Number: "+ phone + "\nEmail: "+ email + "\nAddress: "+ address, Toast.LENGTH_SHORT).show();
+                + "\nName: "+ name + "\nPhone Number: "+ phone + "\nAddress: "+ address, Toast.LENGTH_SHORT).show();
     }
 
 }

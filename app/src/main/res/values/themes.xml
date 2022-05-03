@@ -53,7 +53,6 @@
     <!-- Main Activity Styles-->
     <style name="MainActivityButtonStyle">
         <item name="android:textSize">45sp</item>
-        <item name="android:background">#ffe270</item>
         <item name="android:textColor">#2e2e2e</item>
         <item name="android:textAlignment">center</item>
         <item name="android:layout_width">300dp</item>
