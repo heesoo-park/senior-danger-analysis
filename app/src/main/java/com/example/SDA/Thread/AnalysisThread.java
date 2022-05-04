@@ -8,12 +8,25 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.SDA.Library.AnimatedGifEncoder;
+import com.example.SDA.Service.UserAccount;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -23,6 +36,7 @@ public class AnalysisThread extends Thread {
     private static final String TAG = "AnalysisThread";
     Vector<byte[]> frames;
     private final int num;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public AnalysisThread(int num, Vector<byte[]> frames) {
         this.num = num;
@@ -96,6 +110,58 @@ public class AnalysisThread extends Thread {
         }
     }
 
+    private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    // 서버키는 자기걸로 채워넣기
+    private static final String SERVER_KEY = "AAAAz6URi6o:APA91bGfLNKEcZg8C_hZxx1zBCF_3BI6iiVyviNWGQSynbFewcTB3C9MNM7aVGmTSBaUKJYfI5SXly31rTAQW_PlGSHG3taSz33HHFB9RJZzZllbDKsqzUioqSKyldTVQBjtfydUI-Ww";
+    private void sentPostToFCM(final String idToken, final String message) {
+        //String token = FirebaseMessaging.getInstance().getToken().getResult(); // 등록 토큰 확인용
+        database.getReference("capstone/UserAccount")
+                .child(idToken)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        UserAccount userAccount = new UserAccount();
+                        userAccount.setIdToken(idToken);
+                        userAccount.setRegistrationToken(snapshot.child("registrationToken").getValue(String.class));
+                        Log.e(TAG,userAccount.getIdToken() + " / "+ userAccount.getRegistrationToken());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    JSONObject root = new JSONObject();
+                                    JSONObject notification = new JSONObject();
+                                    notification.put("body", message);
+                                    notification.put("title", "SDA");
+                                    root.put("notification",notification);
+                                    root.put("to",userAccount.getRegistrationToken());
+
+                                    URL Url = new URL(FCM_MESSAGE_URL);
+                                    HttpURLConnection conn = (HttpURLConnection) Url.openConnection();
+                                    conn.setRequestMethod("POST");
+                                    conn.setDoOutput(true);
+                                    conn.setDoInput(true);
+                                    conn.addRequestProperty("Authorization", "key=" + SERVER_KEY);
+                                    conn.setRequestProperty("Accept", "application/json");
+                                    conn.setRequestProperty("Content-type", "application/json");
+                                    OutputStream os = conn.getOutputStream();
+                                    os.write(root.toString().getBytes("utf-8"));
+                                    os.flush();
+                                    conn.getResponseCode();
+
+                                } catch (JSONException | IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
     @Override
     public void run() {
         Log.e(TAG, "Analysis Thread " + num + " Start...");
@@ -107,6 +173,7 @@ public class AnalysisThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        sentPostToFCM("QnGj2eKuSnVjl9nZo6r2ZDRzEHx1", "hi!");
         Log.e(TAG, "5초 지남 : " + num + " Thread 모델 분석이 끝났음");
         Log.e(TAG, "Analysis Thread " + num + " Finish...");
     }

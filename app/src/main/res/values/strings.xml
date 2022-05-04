@@ -2,6 +2,8 @@
     <string name="app_name">SDA</string>
     <string name="team_name">SDA</string>
 
+    <string name="msg_token_fmt">%s</string>
+
     <!-- descriptions-->
     <string name="main_image_view_description">서비스를 동작/중지시킬 수 있는 버튼입니다</string>
     <string name="state_image_view_description">현재 서비스가 동작 중인지를 표시하는 그림입니다. 동작 중이면 초록색, 중지 중이면 빨간색으로 표시됩니다.</string>
