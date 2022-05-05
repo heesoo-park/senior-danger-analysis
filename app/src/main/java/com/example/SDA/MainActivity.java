@@ -25,6 +25,9 @@ import com.example.SDA.Activity.InformationActivity;
 import com.example.SDA.Activity.PreviewActivity;
 import com.example.SDA.Activity.TempActivity;
 import com.example.SDA.Service.ForegroundService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==200 && grantResults.length>0){
+        if(requestCode==200 && grantResults.length > 0){
             boolean permissionGranted=true;
             for(int result : grantResults){
                 if(result != PackageManager.PERMISSION_GRANTED){
@@ -148,17 +151,10 @@ public class MainActivity extends AppCompatActivity {
         editInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), TempActivity.class);
-                startActivity(intent);
-            }
-        });
-        openPreviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 if (ForegroundService.isServiceRunning(getApplication())) {
                     stopService();
                 }
-                Intent intent = new Intent(MainActivity.this, PreviewActivity.class);
+                Intent intent = new Intent(getApplicationContext(), TempActivity.class);
                 startActivity(intent);
             }
         });

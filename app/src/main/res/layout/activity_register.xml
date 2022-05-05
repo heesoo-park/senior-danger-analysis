@@ -1,130 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/theme_yellow"
+    android:gravity="center"
     tools:context=".Activity.RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:orientation="vertical">
 
         <!-- Title -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="회원가입"
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
             style="@style/Title"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:background="@color/theme_black">
 
-            <!-- ID 입력 -->
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="20dp">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="아이디"
-                    style="@style/InputTitle"/>
-
-                <EditText
-                    android:id="@+id/editTextRegisterId"
+                <!-- 아이디, 비밀번호 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="id"
-                    android:textSize="40dp"
-                    android:inputType="text"
-                    style="@style/InputBox"/>
-            </LinearLayout>
+                    android:orientation="vertical">
 
-            <!-- Password 입력 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="20dp">
+                    <!-- ID 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_margin="10dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="비밀번호"
-                    style="@style/InputTitle"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="아이디"
+                            style="@style/InputTitle"/>
 
-                <EditText
-                    android:id="@+id/editTextRegisterPwd"
+                        <EditText
+                            android:id="@+id/editTextRegisterId"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="id"
+                            android:textSize="18dp"
+                            android:inputType="text"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
+
+                    <!-- Password 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_margin="10dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="비밀번호"
+                            style="@style/InputTitle"/>
+
+                        <EditText
+                            android:id="@+id/editTextRegisterPwd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="password"
+                            android:textSize="18dp"
+                            android:inputType="textPassword"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- 이름, 연락처 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="password"
-                    android:textSize="40dp"
-                    android:inputType="textPassword"
-                    style="@style/InputBox"/>
-            </LinearLayout>
+                    android:orientation="vertical">
 
-            <!-- 이름 입력 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="20dp">
+                    <!-- 이름 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_margin="10dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="이름"
-                    style="@style/InputTitle"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="이름"
+                            style="@style/InputTitle"/>
 
-                <EditText
-                    android:id="@+id/editTextRegisterName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="name"
-                    android:textSize="40dp"
-                    android:inputType="textPersonName"
-                    style="@style/InputBox"/>
+                        <EditText
+                            android:id="@+id/editTextRegisterName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="name"
+                            android:textSize="18dp"
+                            android:inputType="textPersonName"
+                            style="@style/InputBox"/>
 
-            </LinearLayout>
+                    </LinearLayout>
 
-            <!-- 연락처 입력 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="20dp">
+                    <!-- 연락처 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_margin="10dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="연락처"
-                    style="@style/InputTitle"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="연락처"
+                            style="@style/InputTitle"/>
 
-                <EditText
-                    android:id="@+id/editTextRegisterPhone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="phone number"
-                    android:textSize="40dp"
-                    android:inputType="phone"
-                    style="@style/InputBox"/>
+                        <EditText
+                            android:id="@+id/editTextRegisterPhone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="phone number"
+                            android:textSize="18dp"
+                            android:inputType="phone"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
 
             <!-- 주소 입력 -->
@@ -132,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_margin="20dp">
+                android:layout_margin="10dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -142,31 +171,24 @@
 
                 <EditText
                     android:id="@+id/editTextRegisterAddress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="720dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="addresss"
-                    android:textSize="40dp"
+                    android:hint="address"
+                    android:textSize="18dp"
                     android:inputType="textPostalAddress"
                     style="@style/InputBox"/>
             </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Button Container -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/registerSubmitButton"
-                android:layout_width="470dp"
-                style="@style/ButtonStyle"
-                android:text="회원가입"/>
-        </LinearLayout>
-
+        <Button
+            android:layout_width="780dp"
+            android:id="@+id/registerSubmitButton"
+            style="@style/ButtonStyle"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="가입하기"/>
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

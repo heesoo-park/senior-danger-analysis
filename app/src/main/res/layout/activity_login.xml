@@ -1,98 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@color/theme_yellow"
+    tools:context=".Activity.LoginActivity">
 
-    <!-- Title -->
-    <TextView
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="로그인"
-        android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        style="@style/Title"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <!-- ID 입력 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="아이디"
-                style="@style/InputTitle"/>
-
-            <EditText
-                android:id="@+id/editTextLoginId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="id"
-                android:textSize="40dp"
-                android:inputType="text"
-                style="@style/InputBox"/>
-        </LinearLayout>
-
-        <!-- Password 입력 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="비밀번호"
-                style="@style/InputTitle"/>
-
-            <EditText
-                android:id="@+id/editTextLoginPwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="password"
-                android:textSize="40dp"
-                android:inputType="textPassword"
-                style="@style/InputBox"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- Button Container -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical">
 
+        <!-- Title -->
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:background="@drawable/logo"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+
+            android:gravity="center"
+            android:background="@color/theme_black"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp">
+
+            <!-- ID 입력 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="아이디"
+                    style="@style/InputTitle"/>
+
+                <EditText
+                    android:id="@+id/editTextLoginId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="id"
+                    android:inputType="text"
+                    style="@style/InputBox"/>
+            </LinearLayout>
+
+            <!-- Password 입력 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="비밀번호"
+                    style="@style/InputTitle"/>
+
+                <EditText
+                    android:id="@+id/editTextLoginPwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="password"
+                    android:inputType="textPassword"
+                    style="@style/InputBox"/>
+            </LinearLayout>
+        </LinearLayout>
         <Button
+            android:layout_width="410dp"
             android:id="@+id/loginButton"
-            android:layout_width="470dp"
-            android:layout_margin="20dp"
             style="@style/ButtonStyle"
+            android:layout_gravity="center"
+            android:background="@color/theme_black"
+            android:layout_marginTop="20dp"
             android:text="로그인"/>
 
         <Button
+            android:layout_width="410dp"
             android:id="@+id/registerButton"
-            android:layout_width="470dp"
             style="@style/ButtonStyle"
+            android:layout_gravity="center"
+            android:background="@color/theme_black"
+            android:layout_marginTop="20dp"
             android:text="회원가입"/>
     </LinearLayout>
-
 </LinearLayout>

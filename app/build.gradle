@@ -43,4 +43,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-database:19.2.1'
     implementation 'com.google.firebase:firebase-messaging'
+    implementation 'ai.djl:api:0.6.0'
 }

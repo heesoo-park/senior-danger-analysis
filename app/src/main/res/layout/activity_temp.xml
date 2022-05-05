@@ -5,26 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".TempActivity">
+    tools:context=".Activity.TempActivity">
 
     <Button
         android:id="@+id/temp1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:text="정보 수정"/>
     <Button
         android:id="@+id/temp2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:text="회원가입"/>
     <Button
         android:id="@+id/temp3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:text="로그인"/>
+    <Button
+        android:id="@+id/temp5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="로그아웃"/>
     <Button
         android:id="@+id/temp4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:text="보호자등록"/>
 </LinearLayout>

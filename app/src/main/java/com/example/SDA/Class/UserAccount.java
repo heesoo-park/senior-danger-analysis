@@ -1,4 +1,4 @@
-package com.example.SDA.Service;
+package com.example.SDA.Class;
 
 public class UserAccount {
     private String idToken;

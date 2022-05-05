@@ -1,15 +1,28 @@
 package com.example.SDA.Thread;
 
+import static android.os.Environment.DIRECTORY_DOCUMENTS;
+import static android.os.Environment.DIRECTORY_PICTURES;
+
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.os.Environment;
 import android.util.Log;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Queue;
+import java.util.Vector;
 
 public class CaptureThread extends Thread {
     private static final String TAG = "CaptureThread";
@@ -67,6 +80,7 @@ public class CaptureThread extends Thread {
             @Override
             public void onPreviewFrame(byte[] data, Camera camera) {
                 try {
+                    Camera.Parameters parameters = camera.getParameters();
                     byte[] baos = convertYuvToJpeg(data, camera);
                     if (baos == null) {
                         return;
@@ -102,5 +116,25 @@ public class CaptureThread extends Thread {
         int quality = 20; //set quality
         image.compressToJpeg(new Rect(0, 0, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height), quality, baos);//this line decreases the image quality
         return baos.toByteArray();
+    }
+
+    private File getOutputTextFile() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.getDefault() );
+        Date curDate = new Date(System.currentTimeMillis());
+        String filename = formatter.format(curDate);
+
+        String state = Environment.getExternalStorageState();
+        if(!state.equals(Environment.MEDIA_MOUNTED)) {
+            return null;
+        } else {
+            String strFolderName = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS) + File.separator + "SDA" + File.separator;
+            File folder = new File(strFolderName);
+
+            if(!folder.exists()) {
+                folder.mkdirs();
+            }
+            File outputFile = new File(strFolderName + "/" + filename + ".txt");
+            return outputFile;
+        }
     }
 }

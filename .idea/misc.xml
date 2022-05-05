@@ -60,14 +60,24 @@
         <entry key="..\:/Users/hspear/AndroidStudioProjects/MyApplication/app/src/main/res/layout/activity_temp.xml" value="0.1" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/MyApplication/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.155" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/drawable-v24/background_yellow.xml" value="0.111" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/drawable-v24/button_white.xml" value="0.1575" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/drawable-v24/button_yellow.xml" value="0.111" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/drawable-v24/color_picker_red.xml" value="0.111" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1625" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1625" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/drawable/ic_main_background.xml" value="0.111" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/font/font.xml" value="0.178125" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_address.xml" value="0.1" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_care_enrollment.xml" value="0.153125" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_edit_information.xml" value="0.153125" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_infomation.xml" value="0.14791666666666667" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_login.xml" value="0.14791666666666667" />
         <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_main.xml" value="0.153125" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_preview.xml" value="0.14791666666666667" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_register.xml" value="0.1" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_splash.xml" value="0.14791666666666667" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/layout/activity_temp.xml" value="0.1" />
+        <entry key="..\:/Users/hspear/AndroidStudioProjects/SDA/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.165" />
       </map>
     </option>
   </component>
