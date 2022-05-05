@@ -70,3 +70,11 @@ public class EditInformationActivity extends AppCompatActivity{
                         e.printStackTrace();
                     }
                 });
+
+                
+                
+                
+            }
+        });
+    }
+}
