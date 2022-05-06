@@ -22,14 +22,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.SDA.Activity.CareEnrollmentActivity;
 import com.example.SDA.Activity.EditInformationActivity;
 import com.example.SDA.Activity.InformationActivity;
 import com.example.SDA.Activity.PreviewActivity;
 import com.example.SDA.Activity.TempActivity;
+import com.example.SDA.Class.UserAccount;
 import com.example.SDA.Service.ForegroundService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -53,12 +70,19 @@ public class MainActivity extends AppCompatActivity {
     private Button colorChangeBlackButton;
     private Button colorChangeRainbowButton;
 
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
     private int backgroundColor = -1;
     private int buttonColor;
+    private String careIdToken;
+    private String seniorName;
     public static Context context;
+
+    private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    private static final String SERVER_KEY = "AAAAz6URi6o:APA91bGfLNKEcZg8C_hZxx1zBCF_3BI6iiVyviNWGQSynbFewcTB3C9MNM7aVGmTSBaUKJYfI5SXly31rTAQW_PlGSHG3taSz33HHFB9RJZzZllbDKsqzUioqSKyldTVQBjtfydUI-Ww";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +127,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if(permissionGranted){
+            if (permissionGranted) {
                 initLayout();
-            }else{
+            } else {
                 Toast.makeText(this,
                         "권한을 허용해야 SDA 앱을 이용하실 수 있습니다.",
                         Toast.LENGTH_LONG).show();
@@ -143,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("button_color", R.drawable.button_yellow);
             editor.commit();
         }
+        careIdToken = pref.getString("care_id_token", null);
+        seniorName = pref.getString("name", null);
 
         mainImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,6 +205,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, InformationActivity.class);
                 startActivity(intent);
+            }
+        });
+        careCallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (careIdToken == null) {
+                    Toast.makeText(getApplicationContext(), "보호자 정보에 오류가 있습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String msg = seniorName + "님이 보호자님을 호출하였습니다!";
+                sentPostToFCM(careIdToken, msg);
+                Toast.makeText(getApplicationContext(), "보호자에게 알림을 보냈습니다.", Toast.LENGTH_SHORT).show();
             }
         });
         colorChangeRedButton.setOnClickListener(view -> colorChangeRed());
@@ -275,5 +313,54 @@ public class MainActivity extends AppCompatActivity {
         if (ForegroundService.isServiceRunning(getApplication())) {
             animationDrawable.start();
         }
+    }
+
+    private void sentPostToFCM(final String idToken, final String message) {
+        //String token = FirebaseMessaging.getInstance().getToken().getResult(); // 등록 토큰 확인용
+        database.getReference("capstone/UserAccount")
+                .child(idToken)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        UserAccount userAccount = new UserAccount();
+                        userAccount.setIdToken(idToken);
+                        userAccount.setRegistrationToken(snapshot.child("registrationToken").getValue(String.class));
+                        Log.e(TAG,userAccount.getIdToken() + " / "+ userAccount.getRegistrationToken());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    JSONObject root = new JSONObject();
+                                    JSONObject notification = new JSONObject();
+                                    notification.put("body", message);
+                                    notification.put("title", "SDA");
+                                    root.put("notification",notification);
+                                    root.put("to",userAccount.getRegistrationToken());
+
+                                    URL Url = new URL(FCM_MESSAGE_URL);
+                                    HttpURLConnection conn = (HttpURLConnection) Url.openConnection();
+                                    conn.setRequestMethod("POST");
+                                    conn.setDoOutput(true);
+                                    conn.setDoInput(true);
+                                    conn.addRequestProperty("Authorization", "key=" + SERVER_KEY);
+                                    conn.setRequestProperty("Accept", "application/json");
+                                    conn.setRequestProperty("Content-type", "application/json");
+                                    OutputStream os = conn.getOutputStream();
+                                    os.write(root.toString().getBytes("utf-8"));
+                                    os.flush();
+                                    conn.getResponseCode();
+
+                                } catch (JSONException | IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 }

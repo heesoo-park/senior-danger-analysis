@@ -29,13 +29,13 @@ public class CareEnrollmentActivity extends AppCompatActivity {
     Button careEnrollButton;
     EditText editTextCareId;
     String idToken;
-    FirebaseAuth firebaseAuth;
+    FirebaseAuth mFirebaseAuth;
     DatabaseReference mDatabaseRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_care_enrollment);
-        firebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
         careEnrollButton = (Button) findViewById(R.id.careEnrollButton);
         editTextCareId = (EditText) findViewById(R.id.editTextCareId);
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("capstone");
@@ -50,38 +50,38 @@ public class CareEnrollmentActivity extends AppCompatActivity {
     private void onClickCareEnrollButton() {
         // 등록 버튼 클릭했을 때 이벤트 처리...
         String id = editTextCareId.getText().toString();
-        Log.d("firebase",id);
         mDatabaseRef.child("UserIdToken").child(id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Toast.makeText(CareEnrollmentActivity.this,"보호자 등록에 실패하셨습니다", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                    idToken=String.valueOf(task.getResult().getValue());
-                    firebaseAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName("user").build())
+                } else {
+                    idToken = String.valueOf(task.getResult().getValue());
+                    if (idToken == "null") {
+                        Toast.makeText(CareEnrollmentActivity.this,"존재하지 않는 아이디입니다.", Toast.LENGTH_SHORT).show();
+                        FirebaseAuth.getInstance().signOut();
+                        return;
+                    }
+                    mFirebaseAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName("user").build())
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-                                    HashMap<String,Object> hashMap=new HashMap<>();
-                                    hashMap.put("protector",idToken);
-
+                                    FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
+                                    HashMap<String,Object> hashMap = new HashMap<>();
+                                    hashMap.put("protector", id);
+                                    hashMap.put("protectorToken", idToken);
                                     mDatabaseRef.child("UserAccount").child(currentUser.getUid()).updateChildren(hashMap);
-                                    Toast.makeText(CareEnrollmentActivity.this,"보호자 등록에 성공하셨습니다", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CareEnrollmentActivity.this,"보호자 등록에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(CareEnrollmentActivity.this,"보호자 등록에 실패하셨습니다", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CareEnrollmentActivity.this,"보호자 등록에 실패하셨습니다.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     });
                 }
             }
         });
-
-
     }
 }

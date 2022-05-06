@@ -134,6 +134,8 @@ public class RegisterActivity extends AppCompatActivity {
                     account.setName(name);
                     account.setPhone(phone);
                     account.setAddress(address);
+                    account.setProtector("not_enroll");
+                    account.setProtectorToken("not_enroll");
                     mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
                     mDatabaseRef.child("UserIdToken").child(_id).setValue(firebaseUser.getUid());
                     Toast.makeText(RegisterActivity.this,"회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();

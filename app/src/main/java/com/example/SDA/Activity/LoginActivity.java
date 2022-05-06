@@ -13,19 +13,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.SDA.Class.UserAccount;
 import com.example.SDA.MainActivity;
 import com.example.SDA.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth; //파이어베이스 인증처리
     private DatabaseReference mDatabaseRef; //실시간 데이터베이스 처리
+    private FirebaseUser firebaseUser;
 
     private Button loginButton;
     private Button registerButton;
@@ -64,13 +74,33 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    //FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    firebaseUser = mFirebaseAuth.getCurrentUser();
+                    moveNextActivity();
                 } else {
                     Toast.makeText(LoginActivity.this,"로그인 실패",Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+
+    public void moveNextActivity() {
+        mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Intent intent;
+                UserAccount userAccount = snapshot.getValue(UserAccount.class);
+                if (userAccount.getProtector().equals("not_enroll")) {
+                    intent = new Intent(LoginActivity.this, CareEnrollmentActivity.class);
+                } else {
+                    intent = new Intent(LoginActivity.this, MainActivity.class);
+                }
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

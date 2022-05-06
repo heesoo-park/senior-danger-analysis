@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 public class EditInformationActivity extends AppCompatActivity{
     private DatabaseReference mDatabaseRef;
-    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth mFirebaseAuth;
     private FirebaseUser firebaseUser;
 
     private Button updateButton;
@@ -47,6 +47,7 @@ public class EditInformationActivity extends AppCompatActivity{
 
     private String name;
     private String protector;
+    private String protectorIdToken;
     private String address;
     private String phone;
     private String currentPassword;
@@ -64,8 +65,8 @@ public class EditInformationActivity extends AppCompatActivity{
         editTextUpdateProtector = (EditText)findViewById(R.id.editTextUpdateProtector);
         editTextUpdateAddress = (EditText)findViewById(R.id.editTextUpdateAddress);
         editTextUpdatePhone = (EditText)findViewById(R.id.editTextUpdatePhone);
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = mFirebaseAuth.getCurrentUser();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("capstone");
 
         mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
@@ -83,17 +84,6 @@ public class EditInformationActivity extends AppCompatActivity{
 
             }
         });
-//        mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DataSnapshot> task) {
-//                if (!task.isSuccessful()) {
-//                    Log.e("firebase", "Error getting data", task.getException());
-//                } else {
-//                    Object obj = task.getResult();
-//                    Log.e("firebase", "" + obj);
-//                }
-//            }
-//        });
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,20 +104,21 @@ public class EditInformationActivity extends AppCompatActivity{
                 phone = editTextUpdatePhone.getText().toString();
                 address = editTextUpdateAddress.getText().toString();
 
-                firebaseAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName("user").build())
+                mFirebaseAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName("user").build())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                  @Override
-                                                  public void onSuccess(Void unused) {
-                                                      FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-                                                      HashMap<String,Object> hashMap = new HashMap<>();
-                                                      hashMap.put("name", name);
-                                                      hashMap.put("phone", phone);
-                                                      hashMap.put("address", address);
-                                                      mDatabaseRef.child("UserAccount").child(currentUser.getUid()).updateChildren(hashMap);
-                                                      Toast.makeText(EditInformationActivity.this,"정보수정에 성공하셨습니다", Toast.LENGTH_SHORT).show();
-                                                      finish();
-                                                  }
-                                              }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
+                                HashMap<String,Object> hashMap = new HashMap<>();
+                                hashMap.put("name", name);
+                                hashMap.put("phone", phone);
+                                hashMap.put("address", address);
+                                mDatabaseRef.child("UserAccount").child(currentUser.getUid()).updateChildren(hashMap);
+                                Toast.makeText(EditInformationActivity.this,"정보수정에 성공하셨습니다", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(EditInformationActivity.this,"정보수정에 실패하셨습니다", Toast.LENGTH_SHORT).show();
