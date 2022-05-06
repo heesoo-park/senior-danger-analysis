@@ -41,22 +41,29 @@ public class EditInformationActivity extends AppCompatActivity{
     private EditText editTextUpdateProtector;
     private EditText editTextUpdateAddress;
     private EditText editTextUpdatePhone;
+    private EditText editTextCurrentPassword;
+    private EditText editTextChangePassword;
+    private EditText editTextChangePassword2;
 
     private String name;
     private String protector;
     private String address;
     private String phone;
+    private String currentPassword;
+    private String changePassword;
+    private String changePassword2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_information);
+
         updateButton = (Button) findViewById(R.id.updateButton);
         logoutButton = (Button) findViewById(R.id.logoutButton);
-        editTextUpdateName = (EditText)findViewById(R.id.name);
-        editTextUpdateProtector = (EditText)findViewById(R.id.protector);
-        editTextUpdateAddress = (EditText)findViewById(R.id.address);
-        editTextUpdatePhone = (EditText)findViewById(R.id.phone);
+        editTextUpdateName = (EditText)findViewById(R.id.editTextUpdateName);
+        editTextUpdateProtector = (EditText)findViewById(R.id.editTextUpdateProtector);
+        editTextUpdateAddress = (EditText)findViewById(R.id.editTextUpdateAddress);
+        editTextUpdatePhone = (EditText)findViewById(R.id.editTextUpdatePhone);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("capstone");
@@ -103,6 +110,7 @@ public class EditInformationActivity extends AppCompatActivity{
             public void onClick(View view) {
                 name = editTextUpdateName.getText().toString();
                 protector = editTextUpdateProtector.getText().toString();
+                // password 변경 추가
                 phone = editTextUpdatePhone.getText().toString();
                 address = editTextUpdateAddress.getText().toString();
 
@@ -117,6 +125,7 @@ public class EditInformationActivity extends AppCompatActivity{
                                                       hashMap.put("address", address);
                                                       mDatabaseRef.child("UserAccount").child(currentUser.getUid()).updateChildren(hashMap);
                                                       Toast.makeText(EditInformationActivity.this,"정보수정에 성공하셨습니다", Toast.LENGTH_SHORT).show();
+                                                      finish();
                                                   }
                                               }).addOnFailureListener(new OnFailureListener() {
                     @Override

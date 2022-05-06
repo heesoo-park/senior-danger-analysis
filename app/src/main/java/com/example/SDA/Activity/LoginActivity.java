@@ -27,9 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth; //파이어베이스 인증처리
     private DatabaseReference mDatabaseRef; //실시간 데이터베이스 처리
 
-    //private SharedPreferences pref;
-    //private SharedPreferences.Editor editor;
-
     private Button loginButton;
     private Button registerButton;
     private EditText editTextLoginId;
@@ -47,9 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = (Button) findViewById(R.id.registerButton);
         loginButton.setOnClickListener(view -> onClickLoginButton());
         registerButton.setOnClickListener(view -> onClickRegisterButton());
-
-        //pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-        //editor = pref.edit();
     }
 
     private void onClickLoginButton() {
@@ -70,11 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                    //if (pref != null) {
-                        //editor.putString("uid", firebaseUser.getUid());
-                        //editor.commit();
-                    //}
+                    //FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

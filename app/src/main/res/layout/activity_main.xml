@@ -133,6 +133,12 @@
             android:text="@string/btn_text_open_preview" />
 
         <Button
+            android:id="@+id/careCallButton"
+            style="@style/MainActivityButtonStyle"
+            android:background="@drawable/button_yellow"
+            android:text="@string/btn_text_care_call" />
+
+        <Button
             android:id="@+id/appInfoButton"
             style="@style/MainActivityButtonStyle"
             android:background="@drawable/button_yellow"

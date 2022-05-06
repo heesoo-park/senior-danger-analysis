@@ -20,6 +20,7 @@
             android:text="정보수정"
             android:layout_marginBottom="20dp"
             android:gravity="center"
+            android:textSize="60dp"
             style="@style/Title"/>
 
         <LinearLayout
@@ -30,8 +31,8 @@
             android:gravity="center"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:paddingTop="30dp"
-            android:paddingBottom="30dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:background="@color/theme_black">
 
             <LinearLayout
@@ -57,7 +58,7 @@
                             style="@style/InputTitle"/>
 
                         <EditText
-                            android:id="@+id/name"
+                            android:id="@+id/editTextUpdateName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -82,7 +83,7 @@
                             style="@style/InputTitle"/>
 
                         <EditText
-                            android:id="@+id/phone"
+                            android:id="@+id/editTextUpdatePhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -107,7 +108,7 @@
                             android:text="보호자" />
 
                         <EditText
-                            android:id="@+id/protector"
+                            android:id="@+id/editTextUpdateProtector"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -126,7 +127,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <!-- 이름 입력 -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -136,22 +136,21 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="비밀번호"
+                            android:text="현재 비밀번호"
                             style="@style/InputTitle"/>
 
                         <EditText
-                            android:id="@+id/password"
+                            android:id="@+id/editTextCurrentPassword"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:ems="10"
-                            android:hint="password"
+                            android:hint="current password"
                             android:textSize="18dp"
                             android:inputType="textPersonName"
                             style="@style/InputBox"/>
                     </LinearLayout>
 
-                    <!-- 연락처 입력 -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -161,11 +160,35 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="비밀번호 확인"
+                            android:text="새 비밀번호"
                             style="@style/InputTitle"/>
 
                         <EditText
-                            android:id="@+id/password2"
+                            android:id="@+id/editTextChangePassword"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="new password"
+                            android:textSize="18dp"
+                            android:inputType="textPersonName"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="새 비밀번호 확인"
+                            style="@style/InputTitle"/>
+
+                        <EditText
+                            android:id="@+id/editTextChangePassword2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -176,32 +199,33 @@
                             style="@style/InputBox"/>
                     </LinearLayout>
 
-                    <!-- 주소 입력 -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/InputTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="주소" />
-
-                        <EditText
-                            android:id="@+id/address"
-                            style="@style/InputBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:ems="10"
-                            android:hint="address"
-                            android:inputType="textPostalAddress"
-                            android:textSize="18dp" />
-                    </LinearLayout>
 
                 </LinearLayout>
+            </LinearLayout>
+
+            <!-- 주소 입력 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/InputTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="주소" />
+
+                <EditText
+                    android:id="@+id/editTextUpdateAddress"
+                    style="@style/InputBox"
+                    android:layout_width="720dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="address"
+                    android:inputType="textPostalAddress"
+                    android:textSize="18dp" />
             </LinearLayout>
 
         </LinearLayout>

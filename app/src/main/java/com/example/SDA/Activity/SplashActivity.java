@@ -15,9 +15,6 @@ import com.example.SDA.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SplashActivity extends AppCompatActivity {
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
-    //private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +23,6 @@ public class SplashActivity extends AppCompatActivity {
 
         ImageView splashImageView = (ImageView) findViewById(R.id.splashImageView);
         splashImageView.setImageResource(R.drawable.splash);
-
-        //pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-        //editor = pref.edit();
-
-        //uid = pref.getString("uid", null);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

@@ -1,2 +1,5 @@
-package com.example.SDA.Model;public class Model {
+package com.example.SDA.Model;
+
+public class Model {
+
 }

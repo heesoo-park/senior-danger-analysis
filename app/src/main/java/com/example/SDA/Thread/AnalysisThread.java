@@ -324,8 +324,8 @@ public class AnalysisThread extends Thread {
     public void run() {
         Log.e(TAG, "Analysis Thread " + num + " Start...");
         //saveAnimatedImage();
-        func();
-        saveTemp2();
+        //func();
+        //saveTemp2();
 
         //Log.e(TAG, "모델 처리 대략 5초 걸린다고 가정...");
 
@@ -334,7 +334,7 @@ public class AnalysisThread extends Thread {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        //sentPostToFCM("TPoxrHNjJhUfTXedlFYSce3eDk72", "hi!");
+        sentPostToFCM("4oDpCWV3plUwPb0hOUZfiDoyeq72", "위험 상황이 발생하였습니다.");
         //Log.e(TAG, "5초 지남 : " + num + " Thread 모델 분석이 끝났음");
         Log.e(TAG, "Analysis Thread " + num + " Finish...");
     }

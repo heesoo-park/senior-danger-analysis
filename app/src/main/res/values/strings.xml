@@ -10,11 +10,13 @@
     <string name="splash_image_view_description">어플리케이션 실행 시 처음에 나오는 이미지입니다.</string>
 
     <!-- text view -->
-    <string name="preview_activity_notice_msg">※ 카메라를 배치하고 반드시 카메라를 닫아주세요. ※</string>
+    <string name="preview_activity_notice_msg">카메라가 비추는 영역의 위험상황을 감지합니다.</string>
+    <string name="preview_activity_notice_msg2">※ 카메라를 배치하고 반드시 카메라를 닫아주세요. ※</string>
 
     <!-- button text -->
     <string name="btn_text_user_info">사용자 정보</string>
     <string name="btn_text_open_preview">카메라 보기</string>
     <string name="btn_text_close_preview">카메라 닫기</string>
+    <string name="btn_text_care_call">보호자 호출</string>
     <string name="btn_text_app_info">어플 정보</string>
 </resources>

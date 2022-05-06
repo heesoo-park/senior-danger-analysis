@@ -30,12 +30,12 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
     private FirebaseAuth mFirebaseAuth; //파이어베이스 인증처리
     private DatabaseReference mDatabaseRef; //실시간 데이터베이스 처리
-    Button registerSubmitButton;
-    EditText editTextRegisterId;
-    EditText editTextRegisterPwd;
-    EditText editTextRegisterName;
-    EditText editTextRegisterPhone;
-    EditText editTextRegisterAddress;
+    private Button registerSubmitButton;
+    private EditText editTextRegisterId;
+    private EditText editTextRegisterPwd;
+    private EditText editTextRegisterName;
+    private EditText editTextRegisterPhone;
+    private EditText editTextRegisterAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

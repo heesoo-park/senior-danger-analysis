@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.SDA.Activity.EditInformationActivity;
 import com.example.SDA.Activity.InformationActivity;
 import com.example.SDA.Activity.PreviewActivity;
 import com.example.SDA.Activity.TempActivity;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button editInfoButton;
     private Button openPreviewButton;
+    private Button careCallButton;
     private Button appInfoButton;
 
     private ImageView mainImageView;
@@ -114,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         editInfoButton =  (Button) findViewById(R.id.editInfoButton);
         openPreviewButton = (Button) findViewById(R.id.openPreviewButton);
+        careCallButton = (Button) findViewById(R.id.careCallButton);
         appInfoButton = (Button) findViewById(R.id.appInfoButton);
 
         mainImageView = (ImageView) findViewById(R.id.mainImageView);
@@ -154,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 if (ForegroundService.isServiceRunning(getApplication())) {
                     stopService();
                 }
-                Intent intent = new Intent(getApplicationContext(), TempActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditInformationActivity.class);
                 startActivity(intent);
             }
         });
@@ -261,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         editInfoButton.setBackground(getDrawable(buttonColor));
         openPreviewButton.setBackground(getDrawable(buttonColor));
         appInfoButton.setBackground(getDrawable(buttonColor));
+        careCallButton.setBackground(getDrawable(buttonColor));
         relativeLayout.setBackground(getDrawable(backgroundColor));
         animationDrawable = (AnimationDrawable) relativeLayout.getBackground();
         animationDrawable.setEnterFadeDuration(0);

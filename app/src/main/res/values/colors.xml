@@ -10,4 +10,5 @@
     <color name="theme_yellow">#ffde59</color>
     <color name="dark_yellow">#FFCD00</color>
     <color name="theme_black">#222222</color>
+    <color name="red">#FF1E1E</color>
 </resources>

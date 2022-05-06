@@ -3,4 +3,8 @@
     <font android:fontStyle="normal"
         android:fontWeight="400"
         android:font="@font/sb_aggro_l"/>
+
+    <font android:fontStyle="normal"
+        android:fontWeight="600"
+        android:font="@font/sb_aggro_m"/>
 </font-family>
