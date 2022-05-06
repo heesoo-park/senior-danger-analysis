@@ -7,6 +7,7 @@ public class UserAccount {
     private String name;
     private String phone;
     private String address;
+    private String protector;
     private String registrationToken;
 
     public UserAccount(){}
@@ -57,6 +58,14 @@ public class UserAccount {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getProtector() {
+        return protector;
+    }
+
+    public void setProtector(String protector) {
+        this.protector = protector;
     }
 
     public String getRegistrationToken() {

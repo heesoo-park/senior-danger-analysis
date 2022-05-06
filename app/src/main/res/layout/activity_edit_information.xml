@@ -1,149 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/theme_yellow"
+    android:gravity="center"
     tools:context=".Activity.EditInformationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:orientation="vertical">
 
         <!-- Title -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="정보 수정"
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center"
+            android:text="정보수정"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
             style="@style/Title"/>
 
-        <!-- Button Container -->
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
             android:gravity="center"
-            android:orientation="vertical">
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:background="@color/theme_black">
 
-            <!-- 이름 입력 -->
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    style="@style/InputTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="이름" />
-
-                <EditText
-                    android:id="@+id/name"
-                    style="@style/InputBox"
+                <!-- 이름, 연락처, 보호자 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="name"
-                    android:inputType="text"
-                    android:textSize="40dp" />
-            </LinearLayout>
+                    android:orientation="vertical">
+                    <!-- 이름 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="이름"
+                            style="@style/InputTitle"/>
 
-            <!-- 보호자 입력 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="name"
+                            android:textSize="18dp"
+                            android:inputType="textPersonName"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
 
-                <TextView
-                    style="@style/InputTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="보호자" />
+                    <!-- 연락처 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/protector"
-                    style="@style/InputBox"
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="연락처"
+                            style="@style/InputTitle"/>
+
+                        <EditText
+                            android:id="@+id/phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="phone number"
+                            android:textSize="18dp"
+                            android:inputType="phone"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
+
+                    <!-- 보호자 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/InputTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="보호자" />
+
+                        <EditText
+                            android:id="@+id/protector"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="name"
+                            android:textSize="18dp"
+                            android:inputType="textPersonName"
+                            style="@style/InputBox"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- 비밀번호 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="protector"
-                    android:inputType="textPersonName"
-                    android:textSize="40dp" />
+                    android:orientation="vertical">
+                    <!-- 이름 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
 
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="비밀번호"
+                            style="@style/InputTitle"/>
 
-            <!-- 연락처 입력 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/password"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="password"
+                            android:textSize="18dp"
+                            android:inputType="textPersonName"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
 
-                <TextView
-                    style="@style/InputTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="연락처" />
+                    <!-- 연락처 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/phone"
-                    style="@style/InputBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="phone number"
-                    android:inputType="phone"
-                    android:textSize="40dp" />
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="비밀번호 확인"
+                            style="@style/InputTitle"/>
 
-            <!-- 주소 입력 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/password2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="다시 한번 입력해주세요"
+                            android:textSize="18dp"
+                            android:inputType="phone"
+                            style="@style/InputBox"/>
+                    </LinearLayout>
 
-                <TextView
-                    style="@style/InputTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="주소" />
+                    <!-- 주소 입력 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/address"
-                    style="@style/InputBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="addresss"
-                    android:inputType="textPostalAddress"
-                    android:textSize="40dp" />
+                        <TextView
+                            style="@style/InputTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="주소" />
+
+                        <EditText
+                            android:id="@+id/address"
+                            style="@style/InputBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="address"
+                            android:inputType="textPostalAddress"
+                            android:textSize="18dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+        <Button
+            android:id="@+id/updateButton"
+            style="@style/ButtonStyle"
+            android:layout_width="780dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="수정"/>
 
-            <Button
-                android:id="@+id/registerSubmitButton"
-                android:layout_width="470dp"
-                style="@style/ButtonStyle"
-                android:text="수정"/>
-        </LinearLayout>
-
+        <Button
+            android:id="@+id/logoutButton"
+            style="@style/ButtonStyle"
+            android:layout_width="780dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="로그아웃"/>
     </LinearLayout>
 </ScrollView>
