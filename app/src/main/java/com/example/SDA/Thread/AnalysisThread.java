@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 
 import com.example.SDA.Library.AnimatedGifEncoder;
 import com.example.SDA.Class.UserAccount;
+import com.example.SDA.MainActivity;
+import com.example.SDA.Model.OpenposeModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,9 +50,10 @@ public class AnalysisThread extends Thread {
     private static final int IMAGE_HEIGHT = 128;
     private static final int IMAGE_WIDTH = 128;
     private static final int IMAGE_CHANNEL = 3;
-    Vector<byte[]> frames;
+    private Vector<byte[]> frames;
     private int[][][][] input = new int[BATCH_SIZE][IMAGE_HEIGHT][IMAGE_WIDTH][IMAGE_CHANNEL];;
     private final int num;
+    private OpenposeModel model;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -318,13 +321,21 @@ public class AnalysisThread extends Thread {
         for (int i = 0; i < BATCH_SIZE; i++) {
             makeInputTensor(i);
         }
+        OpenposeModel model = new OpenposeModel(MainActivity.context);
+        Bitmap bitmap = byteArrayToBitmap(frames.get(0));
+        try {
+            model.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        model.classify(bitmap);
     }
 
     @Override
     public void run() {
         Log.e(TAG, "Analysis Thread " + num + " Start...");
         //saveAnimatedImage();
-        //func();
+        func();
         //saveTemp2();
 
         //Log.e(TAG, "모델 처리 대략 5초 걸린다고 가정...");
@@ -334,7 +345,7 @@ public class AnalysisThread extends Thread {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        sentPostToFCM("4oDpCWV3plUwPb0hOUZfiDoyeq72", "위험 상황이 발생하였습니다.");
+        //sentPostToFCM("4oDpCWV3plUwPb0hOUZfiDoyeq72", "위험 상황이 발생하였습니다.");
         //Log.e(TAG, "5초 지남 : " + num + " Thread 모델 분석이 끝났음");
         Log.e(TAG, "Analysis Thread " + num + " Finish...");
     }

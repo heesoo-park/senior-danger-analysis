@@ -106,13 +106,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void onClickSubmitButton() {
         // submit button event...
-        String id = editTextRegisterId.getText().toString();
+        String _id = editTextRegisterId.getText().toString();
+        String id = _id + "@sda.com";
         String pwd = editTextRegisterPwd.getText().toString();
         String name = editTextRegisterName.getText().toString();
         String phone = editTextRegisterPhone.getText().toString();
         String address = editTextRegisterAddress.getText().toString();
 
-        if (!checkIdPattern(id))
+        if (!checkIdPattern(_id))
             return;
         if (!checkPwdPattern(pwd))
             return;
@@ -120,8 +121,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         if (!checkAddressPattern(phone))
             return;
-
-        id += "@SDA.com";
 
         mFirebaseAuth.createUserWithEmailAndPassword(id,pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -136,6 +135,7 @@ public class RegisterActivity extends AppCompatActivity {
                     account.setPhone(phone);
                     account.setAddress(address);
                     mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
+                    mDatabaseRef.child("UserIdToken").child(_id).setValue(firebaseUser.getUid());
                     Toast.makeText(RegisterActivity.this,"회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
                     finish();
