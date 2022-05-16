@@ -7,8 +7,8 @@ public class UserAccount {
     private String name;
     private String phone;
     private String address;
-    private String protector;
-    private String protectorToken;
+    private String careId;
+    private String careIdToken;
     private String registrationToken;
 
     public UserAccount(){}
@@ -61,20 +61,12 @@ public class UserAccount {
         this.address = address;
     }
 
-    public String getProtector() {
-        return protector;
+    public String getCareId() {
+        return careId;
     }
 
-    public void setProtector(String protector) {
-        this.protector = protector;
-    }
-
-    public String getProtectorToken() {
-        return protectorToken;
-    }
-
-    public void setProtectorToken(String protectorToken) {
-        this.protectorToken = protectorToken;
+    public void setCareId(String careId) {
+        this.careId = careId;
     }
 
     public String getRegistrationToken() {

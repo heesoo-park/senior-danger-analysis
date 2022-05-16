@@ -1,54 +1,69 @@
 package com.example.SDA.Activity;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.SDA.MainActivity;
 import com.example.SDA.R;
 import com.example.SDA.Class.UserAccount;
+import com.example.SDA.Service.FirebaseAuthService;
+import com.example.SDA.Service.FirebaseDatabaseService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
-    private FirebaseAuth mFirebaseAuth; //파이어베이스 인증처리
-    private DatabaseReference mDatabaseRef; //실시간 데이터베이스 처리
-    private Button registerSubmitButton;
+
+    private FirebaseAuthService authService;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+    private FirebaseDatabaseService dbService;
+    private DatabaseReference databaseRef;
+
     private EditText editTextRegisterId;
     private EditText editTextRegisterPwd;
     private EditText editTextRegisterName;
     private EditText editTextRegisterPhone;
     private EditText editTextRegisterAddress;
+    private Button registerSubmitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("capstone");
+        authService = new FirebaseAuthService();
+        firebaseAuth = authService.getAuth();
+        dbService = new FirebaseDatabaseService();
+        databaseRef = dbService.getReference();
 
         editTextRegisterId = (EditText) findViewById(R.id.editTextRegisterId);
         editTextRegisterPwd = (EditText) findViewById(R.id.editTextRegisterPwd);
         editTextRegisterName = (EditText) findViewById(R.id.editTextRegisterName);
         editTextRegisterPhone = (EditText) findViewById(R.id.editTextRegisterPhone);
         editTextRegisterAddress = (EditText) findViewById(R.id.editTextRegisterAddress);
+        editTextRegisterAddress.setFocusable(false);
+        editTextRegisterAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 주소 검색 웹뷰 화면으로 이동
+                Intent intent = new Intent(RegisterActivity.this, AddressActivity.class);
+                getSearchResult.launch(intent);
+            }
+        });
 
         registerSubmitButton = (Button) findViewById(R.id.registerSubmitButton);
         registerSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -59,10 +74,22 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    private final ActivityResultLauncher<Intent> getSearchResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Search Activity 로부터의 결과 값이 이곳으로 전달 된다.
+                if (result.getResultCode() == RESULT_OK) {
+                    if (result.getData() != null) {
+                        String data = result.getData().getStringExtra("data");
+                        editTextRegisterAddress.setText(data);
+                    }
+                }
+            });
+
     private boolean checkIdPattern(String id) {
         int len = id.length();
-        if (len < 6 || len > 12) {
-            Toast.makeText(RegisterActivity.this,"아이디는 6~12글자만 가능합니다.",Toast.LENGTH_SHORT).show();
+        if (len < 4 || len > 12) {
+            Toast.makeText(RegisterActivity.this,"아이디는 4~12글자만 가능합니다.",Toast.LENGTH_SHORT).show();
             return false;
         }
         if (!Pattern.matches("^[a-zA-Z0-9]*$", id)) {
@@ -74,13 +101,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean checkPwdPattern(String pwd) {
         int len = pwd.length();
-        if (len < 8 || len > 20) {
-            Toast.makeText(RegisterActivity.this,"비밀번호는 8~20글자만 가능합니다.",Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if(!Pattern.matches("^(?=.*\\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-zA-Z]).{8,20}$", pwd))
-        {
-            Toast.makeText(RegisterActivity.this,"대문자, 소문자, 특수문자, 숫자를 하나씩 사용해주세요.",Toast.LENGTH_SHORT).show();
+        if (len < 6 || len > 20) {
+            Toast.makeText(RegisterActivity.this,"비밀번호는 6~20글자만 가능합니다.",Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -105,7 +127,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void onClickSubmitButton() {
-        // submit button event...
         String _id = editTextRegisterId.getText().toString();
         String id = _id + "@sda.com";
         String pwd = editTextRegisterPwd.getText().toString();
@@ -119,25 +140,24 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         if (!checkPhonePattern(phone))
             return;
-        if (!checkAddressPattern(phone))
+        if (!checkAddressPattern(address))
             return;
 
-        mFirebaseAuth.createUserWithEmailAndPassword(id,pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(id,pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                    UserAccount account = new UserAccount();
-                    account.setIdToken(firebaseUser.getUid());
-                    account.setEmailId(firebaseUser.getEmail());
-                    account.setPassword(pwd);
-                    account.setName(name);
-                    account.setPhone(phone);
-                    account.setAddress(address);
-                    account.setProtector("not_enroll");
-                    account.setProtectorToken("not_enroll");
-                    mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
-                    mDatabaseRef.child("UserIdToken").child(_id).setValue(firebaseUser.getUid());
+                    firebaseUser = authService.getUser();
+                    UserAccount userAccount = new UserAccount();
+                    userAccount.setIdToken(firebaseUser.getUid());
+                    userAccount.setEmailId(firebaseUser.getEmail());
+                    userAccount.setPassword(pwd);
+                    userAccount.setName(name);
+                    userAccount.setPhone(phone);
+                    userAccount.setAddress(address);
+                    userAccount.setCareId("not_enroll");
+                    databaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(userAccount);
+                    databaseRef.child("UserIdToken").child(_id).setValue(firebaseUser.getUid());
                     Toast.makeText(RegisterActivity.this,"회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
                     finish();

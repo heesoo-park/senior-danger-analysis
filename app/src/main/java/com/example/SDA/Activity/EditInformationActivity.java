@@ -1,89 +1,81 @@
 package com.example.SDA.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
-import com.example.SDA.Class.UserAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.SDA.Class.PreferenceManager;
+import com.example.SDA.Service.FirebaseAuthService;
+import com.example.SDA.Service.FirebaseDatabaseService;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.example.SDA.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
 public class EditInformationActivity extends AppCompatActivity{
-    private DatabaseReference mDatabaseRef;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser firebaseUser;
+    private FirebaseAuthService authService;
+    private FirebaseDatabaseService dbService;
+    private DatabaseReference databaseRef;
 
     private Button updateButton;
     private Button logoutButton;
 
     private EditText editTextUpdateName;
-    private EditText editTextUpdateProtector;
+    private EditText editTextUpdateCareId;
     private EditText editTextUpdateAddress;
     private EditText editTextUpdatePhone;
-    private EditText editTextCurrentPassword;
-    private EditText editTextChangePassword;
-    private EditText editTextChangePassword2;
 
     private String name;
-    private String protector;
-    private String protectorIdToken;
+    private String careId;
     private String address;
     private String phone;
-    private String currentPassword;
-    private String changePassword;
-    private String changePassword2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_information);
+        authService = new FirebaseAuthService();
+        dbService = new FirebaseDatabaseService();
+        databaseRef = dbService.getReference();
 
         updateButton = (Button) findViewById(R.id.updateButton);
         logoutButton = (Button) findViewById(R.id.logoutButton);
         editTextUpdateName = (EditText)findViewById(R.id.editTextUpdateName);
-        editTextUpdateProtector = (EditText)findViewById(R.id.editTextUpdateProtector);
+        editTextUpdateCareId = (EditText)findViewById(R.id.editTextUpdateCareId);
         editTextUpdateAddress = (EditText)findViewById(R.id.editTextUpdateAddress);
         editTextUpdatePhone = (EditText)findViewById(R.id.editTextUpdatePhone);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = mFirebaseAuth.getCurrentUser();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("capstone");
-
-        mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+        editTextUpdateAddress.setFocusable(false);
+        editTextUpdateAddress.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                UserAccount userAccount = snapshot.getValue(UserAccount.class);
-                editTextUpdateName.setText(userAccount.getName());
-                editTextUpdateProtector.setText(userAccount.getProtector());
-                editTextUpdateAddress.setText(userAccount.getAddress());
-                editTextUpdatePhone.setText(userAccount.getPhone());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onClick(View view) {
+                // 주소 검색 웹뷰 화면으로 이동
+                Intent intent = new Intent(EditInformationActivity.this, AddressActivity.class);
+                getSearchResult.launch(intent);
             }
         });
+
+        name = PreferenceManager.getString(this, PreferenceManager.NAME);
+        careId = PreferenceManager.getString(this, PreferenceManager.CARE_ID);
+        address = PreferenceManager.getString(this, PreferenceManager.ADDRESS);
+        phone = PreferenceManager.getString(this, PreferenceManager.PHONE);
+
+        editTextUpdateName.setText(name);
+        editTextUpdateCareId.setText(careId);
+        editTextUpdateAddress.setText(address);
+        editTextUpdatePhone.setText(phone);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,22 +91,24 @@ public class EditInformationActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 name = editTextUpdateName.getText().toString();
-                protector = editTextUpdateProtector.getText().toString();
-                // password 변경 추가
+                careId = editTextUpdateCareId.getText().toString();
                 phone = editTextUpdatePhone.getText().toString();
                 address = editTextUpdateAddress.getText().toString();
 
-                mFirebaseAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName("user").build())
+                authService.getUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName("user").build())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
                                 HashMap<String,Object> hashMap = new HashMap<>();
                                 hashMap.put("name", name);
                                 hashMap.put("phone", phone);
                                 hashMap.put("address", address);
-                                mDatabaseRef.child("UserAccount").child(currentUser.getUid()).updateChildren(hashMap);
-                                Toast.makeText(EditInformationActivity.this,"정보수정에 성공하셨습니다", Toast.LENGTH_SHORT).show();
+                                // 보호자 수정 기능 추가해야함
+                                databaseRef.child(FirebaseDatabaseService.UserAccount).child(authService.getUid()).updateChildren(hashMap);
+                                Toast.makeText(EditInformationActivity.this,"정보수정에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
+                                ActivityCompat.finishAffinity(EditInformationActivity.this);
+                                Intent intent = new Intent(EditInformationActivity.this, SplashActivity.class);
+                                startActivity(intent);
                                 finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -128,4 +122,16 @@ public class EditInformationActivity extends AppCompatActivity{
             }
         });
     }
+
+    private final ActivityResultLauncher<Intent> getSearchResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Search Activity 로부터의 결과 값이 이곳으로 전달 된다.
+                if (result.getResultCode() == RESULT_OK) {
+                    if (result.getData() != null) {
+                        String data = result.getData().getStringExtra("data");
+                        editTextUpdateAddress.setText(data);
+                    }
+                }
+            });
 }

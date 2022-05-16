@@ -16,10 +16,9 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.example.SDA.MainActivity;
+import com.example.SDA.Activity.MainActivity;
 import com.example.SDA.R;
-import com.example.SDA.Thread.CaptureThread;
-import com.example.SDA.Thread.ConsumerThread;
+import com.example.SDA.Thread.PoseDetectionThread;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -29,9 +28,9 @@ public class ForegroundService extends Service {
 
     private static final String TAG = "ForegroundService";
     private Queue<byte[]> queue = new LinkedList<>();
-    private CaptureThread captureThread;
-    private ConsumerThread consumerThread;
-    int value = 0;
+    private PoseDetectionThread poseDetectionThread;
+    private CameraService cameraService;
+    private int value = 0;
 
     public ForegroundService() { }
 
@@ -44,7 +43,6 @@ public class ForegroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e(TAG, "onCreate");
         startThreads();
     }
 
@@ -52,8 +50,8 @@ public class ForegroundService extends Service {
     public void onDestroy() {
         Log.e(TAG, "onDestory");
         super.onDestroy();
-        captureThread.interrupt();
-        consumerThread.interrupt();
+        cameraService.finish();
+        poseDetectionThread.interrupt();
         task.cancel(true);
     }
 
@@ -99,21 +97,20 @@ public class ForegroundService extends Service {
         builder.setContentIntent(pendingIntent);
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            manager.createNotificationChannel(new NotificationChannel("1", "포그라운드 서비스", NotificationManager.IMPORTANCE_NONE));
+            manager.createNotificationChannel(new NotificationChannel("1", "Foreground Service", NotificationManager.IMPORTANCE_NONE));
         }
         Notification notification = builder.build();
         startForeground(1, notification);
     }
 
     private void startThreads() {
-        consumerThread = new ConsumerThread(queue);
-        consumerThread.start();
-        captureThread = new CaptureThread(queue);
-        captureThread.start();
+        poseDetectionThread = new PoseDetectionThread(queue);
+        poseDetectionThread.start();
+        cameraService = new CameraService(queue);
+        cameraService.onCaptureRepeat();
     }
 
     class BackgroundTask extends AsyncTask<Integer, String, Integer> {
-        String result = "";
         @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
         @Override
         protected Integer doInBackground(Integer... values) {

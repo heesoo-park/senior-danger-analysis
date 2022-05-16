@@ -14,6 +14,8 @@
     <string name="preview_activity_notice_msg2">※ 카메라를 배치하고 반드시 카메라를 닫아주세요. ※</string>
 
     <!-- button text -->
+    <string name="btn_text_service_on">서비스 동작</string>
+    <string name="btn_text_service_off">서비스 중지</string>
     <string name="btn_text_user_info">사용자 정보</string>
     <string name="btn_text_open_preview">카메라 보기</string>
     <string name="btn_text_close_preview">카메라 닫기</string>

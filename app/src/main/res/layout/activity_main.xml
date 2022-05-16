@@ -1,61 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:background="@drawable/background_yellow"
-    tools:context=".MainActivity">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        >
-
-        <Button
-            android:id="@+id/colorChangeYellowButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/color_picker_yellow"
-            android:layout_marginLeft="10dp"
-            />
-
-        <Button
-            android:id="@+id/colorChangeRedButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/color_picker_red"
-            android:layout_marginLeft="10dp"
-            />
-
-        <Button
-            android:id="@+id/colorChangeBlackButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/color_picker_black"
-            android:layout_marginLeft="10dp"
-            />
-
-        <Button
-            android:id="@+id/colorChangeRainbowButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/color_picker_rainbow"
-            android:layout_marginLeft="10dp"
-            />
-
-
-    </LinearLayout>
+    android:orientation="vertical"
+    android:background="@color/theme_black"
+    tools:context=".Activity.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp">
+        android:gravity="start"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp">
 
         <ImageView
             android:id="@+id/serviceStateImageView"
@@ -70,79 +28,63 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="#000000"
+            android:textColor="@color/white"
             android:text=""
             android:textSize="35sp"/>
 
     </LinearLayout>
 
-
     <!-- Logo & Preview -->
-    <LinearLayout
-        android:id="@+id/mainSection"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+<!--    <LinearLayout-->
+<!--        android:id="@+id/mainSection"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:gravity="center"-->
+<!--        android:orientation="vertical">-->
 
-        <ImageView
-            android:id="@+id/mainImageView"
-            android:layout_width="440dp"
-            android:layout_height="440dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/main_image_border"
-            android:contentDescription="@string/main_image_view_description"
-            android:padding="5dp"
-            tools:ignore="ImageContrastCheck" />
+<!--        <ImageView-->
+<!--            android:id="@+id/mainImageView"-->
+<!--            android:layout_width="500dp"-->
+<!--            android:layout_height="500dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:background="@drawable/main_image_border"-->
+<!--            android:contentDescription="@string/main_image_view_description"-->
+<!--            android:padding="5dp"-->
+<!--            tools:ignore="ImageContrastCheck" />-->
 
-        <TextView
-            android:id="@+id/serviceGuideTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="50sp"
-            android:gravity="center"
-            android:layout_marginBottom="50dp"
-            android:fontFamily="@font/sb_aggro_l"
-            android:textColor="@color/black"
-            android:text=""/>
-
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
     <!-- Button Container -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/mainSection"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        android:gravity="center"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center|end"
         android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/serviceButton"
+            style="@style/MainActivityButtonStyle"
+            android:background="@drawable/button_dark"
+            android:text="@string/btn_text_service_off" />
 
         <Button
             android:id="@+id/editInfoButton"
             style="@style/MainActivityButtonStyle"
-            android:background="@drawable/button_yellow"
+            android:background="@drawable/button_dark"
             android:text="@string/btn_text_user_info" />
-
 
         <Button
             android:id="@+id/openPreviewButton"
             style="@style/MainActivityButtonStyle"
-            android:background="@drawable/button_yellow"
+            android:background="@drawable/button_dark"
             android:text="@string/btn_text_open_preview" />
 
         <Button
             android:id="@+id/careCallButton"
             style="@style/MainActivityButtonStyle"
-            android:background="@drawable/button_yellow"
+            android:background="@drawable/button_dark"
             android:text="@string/btn_text_care_call" />
-
-        <Button
-            android:id="@+id/appInfoButton"
-            style="@style/MainActivityButtonStyle"
-            android:background="@drawable/button_yellow"
-            android:text="@string/btn_text_app_info" />
-
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
