@@ -18,7 +18,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.SDA.Activity.MainActivity;
 import com.example.SDA.R;
-import com.example.SDA.Thread.PoseDetectionThread;
+import com.example.SDA.Thread.AnalysisThread;
+import com.google.mlkit.vision.pose.Pose;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -27,8 +28,8 @@ public class ForegroundService extends Service {
     private BackgroundTask task;
 
     private static final String TAG = "ForegroundService";
-    private Queue<byte[]> queue = new LinkedList<>();
-    private PoseDetectionThread poseDetectionThread;
+    private Queue<Pose> queue = new LinkedList<>();
+    private AnalysisThread analysisThread;
     private CameraService cameraService;
     private int value = 0;
 
@@ -51,7 +52,7 @@ public class ForegroundService extends Service {
         Log.e(TAG, "onDestory");
         super.onDestroy();
         cameraService.finish();
-        poseDetectionThread.interrupt();
+        analysisThread.interrupt();
         task.cancel(true);
     }
 
@@ -104,8 +105,8 @@ public class ForegroundService extends Service {
     }
 
     private void startThreads() {
-        poseDetectionThread = new PoseDetectionThread(queue);
-        poseDetectionThread.start();
+        analysisThread = new AnalysisThread(queue);
+        analysisThread.start();
         cameraService = new CameraService(queue);
         cameraService.onCaptureRepeat();
     }

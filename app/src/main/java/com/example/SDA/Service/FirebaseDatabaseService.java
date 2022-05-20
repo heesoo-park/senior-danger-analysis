@@ -17,13 +17,19 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.concurrent.Future;
 
 public class FirebaseDatabaseService {
-    private DatabaseReference databaseReference; //실시간 데이터베이스 처리
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
     public static final String UserAccount = "UserAccount";
     public static final String UserIdToken = "UserIdToken";
     public static final String SeniorListForCare = "SeniorListForCare";
 
     public FirebaseDatabaseService() {
-        databaseReference = FirebaseDatabase.getInstance().getReference("capstone");
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference("capstone");
+    }
+
+    public FirebaseDatabase getDatabase() {
+        return database;
     }
 
     public DatabaseReference getReference() {

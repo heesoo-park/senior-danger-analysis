@@ -24,11 +24,15 @@ public class FCMService {
 
     private static final String TAG = "FCMMessageService";
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private FirebaseDatabaseService dbService;
+    private FirebaseDatabase database;
 
-    public FCMService() {}
+    public FCMService() {
+        dbService = new FirebaseDatabaseService();
+        database = dbService.getDatabase();
+    }
 
-    public void sentPostToFCM(final String idToken, final String message, String router) {
+    public void sentPostToFCM(final String idToken, final String message, String imageName) {
         //String token = FirebaseMessaging.getInstance().getToken().getResult(); // 등록 토큰 확인용
         database.getReference("capstone/UserAccount")
                 .child(idToken)
@@ -47,7 +51,8 @@ public class FCMService {
                                     JSONObject notification = new JSONObject();
                                     JSONObject data = new JSONObject();
                                     data.put("title", "SDA");
-                                    data.put("message", router);
+                                    data.put("body", message);
+                                    data.put("message", imageName);
                                     notification.put("body", message);
                                     notification.put("title", "SDA");
                                     root.put("data", data);

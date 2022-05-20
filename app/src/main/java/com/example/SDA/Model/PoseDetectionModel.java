@@ -2,6 +2,7 @@ package com.example.SDA.Model;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -21,20 +22,20 @@ public class PoseDetectionModel {
     private PoseDetector poseDetector;
     private InputImage image;
     private PointF[] allPoseLandmark;
-    private RectF rect;
     private PoseLandmarkInfo poseLandmarkInfo;
+    private RectF rect;
     private static final int SKELETON_BODY_POINT = 33;
-    private float xMax, xMin, yMax, yMin;
     private static final float POS_INF = Float.POSITIVE_INFINITY;
     private static final float NEG_INF = Float.NEGATIVE_INFINITY;
+    private float xMax, xMin, yMax, yMin;
     private int width, height;
 
     public PoseDetectionModel(int width, int height) {
         this.width = width;
         this.height = height;
         options = new PoseDetectorOptions.Builder()
-                        .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
-                        .build();
+                .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
+                .build();
         poseDetector = PoseDetection.getClient(options);
     }
 
@@ -57,18 +58,19 @@ public class PoseDetectionModel {
                                         poseLandmarkInfo = null;
                                         return;
                                     } else {
-                                        allPoseLandmark[i] = poseLandmark.getPosition();
+                                        PointF pointF = poseLandmark.getPosition();
+                                        allPoseLandmark[i] = pointF;
                                         // rect를 생성할 때 팔 부분(elbow, wrist, pinky, index, thumb)는 사용 안함
                                         if (i >= 13 && i <= 22)
                                             continue;
-                                        xMax = Math.max(xMax, allPoseLandmark[i].x);
-                                        xMin = Math.min(xMin, allPoseLandmark[i].x);
-                                        yMax = Math.max(yMax, height - allPoseLandmark[i].y);
-                                        yMin = Math.min(yMin, height - allPoseLandmark[i].y);
+                                        xMax = Math.max(xMax, pointF.x);
+                                        xMin = Math.min(xMin, pointF.x);
+                                        yMax = Math.max(yMax, height - pointF.y);
+                                        yMin = Math.min(yMin, height - pointF.y);
                                     }
                                 }
                                 rect = new RectF(xMin, yMin, xMax, yMax);
-                                poseLandmarkInfo.setAllPoseLandmark(allPoseLandmark);
+                                poseLandmarkInfo.setPose(pose);
                                 poseLandmarkInfo.setRect(rect);
                             }
                         })

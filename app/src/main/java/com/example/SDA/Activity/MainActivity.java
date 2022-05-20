@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,9 +19,11 @@ import android.widget.Toast;
 import com.example.SDA.Class.PreferenceManager;
 import com.example.SDA.R;
 import com.example.SDA.Service.FCMService;
+import com.example.SDA.Service.FirebaseStorageService;
 import com.example.SDA.Service.ForegroundService;
 
 public class MainActivity extends AppCompatActivity {
+    public static Context context;
 
     private Button serviceButton;
     private Button editInfoButton;
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
         } else {
             initLayout();
-            //context = getApplicationContext();
+            context = getApplicationContext();
         }
     }
 
@@ -136,9 +139,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "보호자 정보에 오류가 있습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 String msg = seniorName + "님이 보호자님을 호출하였습니다!";
-                messageService.sentPostToFCM(careIdToken, msg, "0s");
+                messageService.sentPostToFCM(careIdToken, msg, "0");
                 Toast.makeText(getApplicationContext(), "보호자에게 알림을 보냈습니다.", Toast.LENGTH_SHORT).show();
             }
         });
