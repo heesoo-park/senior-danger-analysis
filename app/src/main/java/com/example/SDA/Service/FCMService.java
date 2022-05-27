@@ -53,10 +53,10 @@ public class FCMService {
                                     data.put("title", "SDA");
                                     data.put("body", message);
                                     data.put("message", imageName);
-                                    notification.put("body", message);
-                                    notification.put("title", "SDA");
+                                    //notification.put("body", message);
+                                    //notification.put("title", "SDA");
                                     root.put("data", data);
-                                    root.put("notification",notification);
+                                    //root.put("notification",notification);
                                     root.put("to",userAccount.getRegistrationToken());
 
                                     URL Url = new URL(FCM_MESSAGE_URL);

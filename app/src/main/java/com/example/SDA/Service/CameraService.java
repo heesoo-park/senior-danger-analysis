@@ -7,6 +7,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.Log;
 
+import com.example.SDA.Activity.MainActivity;
 import com.example.SDA.Class.PoseLandmarkInfo;
 import com.example.SDA.Model.PoseDetectionModel;
 import com.example.SDA.Thread.AnalysisThread;
@@ -19,14 +20,17 @@ import java.util.Queue;
 
 public class CameraService {
     private static final String TAG = "CameraService";
-    private Camera camera;
-    private SurfaceTexture surfaceTexture;
+
+    public static Camera camera;
+    public static SurfaceTexture surfaceTexture;
+
     private static final int PICTURE_WIDTH = 480;
     private static final int PICTURE_HEIGHT = 320;
     private static final int FRAME_RATE = 10;
     private static final int CAMERA_INDEX = 0;
     private static final int CAPTURE_MODE_BURST = 2;
     private static final int CAPTURE_MODE_NORMAL = 12;
+
     private int captureMode;
     private int captureCount;
     private Queue<Pose> queue;
@@ -53,7 +57,7 @@ public class CameraService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        android.hardware.Camera.Parameters params = camera.getParameters();
+        Camera.Parameters params = camera.getParameters();
         params.setPreviewSize(PICTURE_WIDTH, PICTURE_HEIGHT);
         params.setPictureSize(PICTURE_WIDTH, PICTURE_HEIGHT);
         params.setFlashMode(android.hardware.Camera.Parameters.FLASH_MODE_OFF);
@@ -62,10 +66,6 @@ public class CameraService {
         camera.setParameters(params);
         camera.startPreview();
         captureMode = CAPTURE_MODE_NORMAL;
-    }
-
-    public Camera getCamera() {
-        return camera;
     }
 
     private void pushPoseDetector(byte[] data) {
@@ -94,12 +94,13 @@ public class CameraService {
             analysisPushCount++;
         }
 
-        if (AnalysisThread.result == 0) {
+        if (AnalysisThread.result == 1) {
             // 낙상 발생
+            Log.e(TAG, "Analysis result : 낙상 인지! BURST MODE 종료, 이미지 전송");
             queue.clear();
             captureMode = CAPTURE_MODE_NORMAL;
             analysisPushCount = 0;
-            AnalysisThread.result = 1;
+            AnalysisThread.result = 0;
             storageThread = new StorageThread(data, PICTURE_WIDTH, PICTURE_HEIGHT);
             storageThread.run();
         }

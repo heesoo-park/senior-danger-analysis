@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
@@ -28,7 +29,7 @@ public class ForegroundService extends Service {
     private BackgroundTask task;
 
     private static final String TAG = "ForegroundService";
-    private Queue<Pose> queue = new LinkedList<>();
+    public static Queue<Pose> queue = new LinkedList<>();
     private AnalysisThread analysisThread;
     private CameraService cameraService;
     private int value = 0;

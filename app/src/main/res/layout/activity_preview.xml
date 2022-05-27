@@ -17,7 +17,7 @@
         android:gravity="center">
 
         <FrameLayout
-            android:id="@+id/frameLayout"
+            android:id="@+id/frameLayou2t"
             android:layout_width="680dp"
             android:layout_height="440dp"
             android:layout_gravity="center"

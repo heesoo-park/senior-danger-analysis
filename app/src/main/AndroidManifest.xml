@@ -35,9 +35,6 @@
             android:name=".Activity.AddressActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.PreviewActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activity.SplashActivity"
             android:exported="true"
             android:screenOrientation="landscape"

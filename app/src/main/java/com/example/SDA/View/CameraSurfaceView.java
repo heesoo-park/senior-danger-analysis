@@ -2,6 +2,7 @@ package com.example.SDA.View;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -9,17 +10,26 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.SDA.Activity.MainActivity;
+import com.example.SDA.Service.CameraService;
+import com.example.SDA.Service.ForegroundService;
+
+import java.io.IOException;
+
 public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
     private Camera camera = null;
 
-    private int mCameraID;
+    private int mCameraID = 0;
     private Camera.CameraInfo mCameraInfo;
     private int mDisplayOrientation;
+    private Context context;
 
-    public CameraSurfaceView(Context context) {
+    public CameraSurfaceView(Context context, Camera camera) {
         super(context);
         init(context);
+        this.context = context;
+        this.camera = camera;
     }
 
     public CameraSurfaceView(Context context, AttributeSet attrs) {
@@ -30,17 +40,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     public void init(Context context) {
         holder = getHolder();
         holder.addCallback(this);
-
-        mCameraID = 0;
-
         mDisplayOrientation = ((Activity)context).getWindowManager()
                 .getDefaultDisplay().getRotation();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        camera = Camera.open(mCameraID);
-
         // retrieve camera's info.
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         Camera.getCameraInfo(mCameraID, cameraInfo);
@@ -71,7 +76,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         int orientation = calculatePreviewOrientation(mCameraInfo,
                 mDisplayOrientation);
         camera.setDisplayOrientation(orientation);
-        camera.startPreview();
+        //camera.startPreview();
     }
 
     @Override
@@ -80,12 +85,15 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     }
 
     public void destroy() {
-        if (camera != null) {
-            camera.stopPreview();
-            camera.release();
-            camera = null;
+        if (!ForegroundService.isServiceRunning(context)) {
+            return;
         }
-    }
+
+        try {
+            camera.setPreviewTexture(CameraService.surfaceTexture);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }}
 
     /**
      /**

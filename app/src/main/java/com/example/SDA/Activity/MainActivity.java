@@ -9,31 +9,41 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.SDA.Class.PreferenceManager;
 import com.example.SDA.R;
+import com.example.SDA.Service.CameraService;
 import com.example.SDA.Service.FCMService;
 import com.example.SDA.Service.FirebaseStorageService;
 import com.example.SDA.Service.ForegroundService;
+import com.example.SDA.View.CameraSurfaceView;
 
 public class MainActivity extends AppCompatActivity {
     public static Context context;
 
     private Button serviceButton;
     private Button editInfoButton;
-    private Button openPreviewButton;
     private Button careCallButton;
 
     private ImageView serviceStateImageView;
     private TextView serviceStateTextView;
 
     private FCMService messageService;
+
+    private FrameLayout frameLayout;
+    private CameraSurfaceView cameraSurfaceView;
+
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==200 && grantResults.length > 0){
@@ -93,12 +108,13 @@ public class MainActivity extends AppCompatActivity {
 
         serviceButton = (Button) findViewById(R.id.serviceButton);
         editInfoButton = (Button) findViewById(R.id.editInfoButton);
-        openPreviewButton = (Button) findViewById(R.id.openPreviewButton);
         careCallButton = (Button) findViewById(R.id.careCallButton);
 
         serviceStateImageView = (ImageView) findViewById(R.id.serviceStateImageView);
         serviceStateTextView = (TextView) findViewById(R.id.serviceStateTextView);
         messageService = new FCMService();
+
+        frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
 
         serviceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,16 +133,6 @@ public class MainActivity extends AppCompatActivity {
                     stopService();
                 }
                 Intent intent = new Intent(MainActivity.this, EditInformationActivity.class);
-                startActivity(intent);
-            }
-        });
-        openPreviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ForegroundService.isServiceRunning(getApplication())) {
-                    stopService();
-                }
-                Intent intent = new Intent(MainActivity.this, PreviewActivity.class);
                 startActivity(intent);
             }
         });
@@ -158,11 +164,40 @@ public class MainActivity extends AppCompatActivity {
         serviceButton.setText(R.string.btn_text_service_on);
         serviceStateImageView.setImageResource(R.drawable.service_state_off);
         serviceStateTextView.setText("정지");
+        frameLayout.setVisibility(View.INVISIBLE);
+        frameLayout.removeView(cameraSurfaceView);
     }
 
     private void updateUI() {
         serviceButton.setText(R.string.btn_text_service_off);
         serviceStateImageView.setImageResource(R.drawable.service_state_on);
         serviceStateTextView.setText("동작");
+        showPreview();
+    }
+
+    private void showPreview() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(CameraService.camera == null) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        frameLayout.removeView(cameraSurfaceView);
+                        cameraSurfaceView = new CameraSurfaceView(MainActivity.this, CameraService.camera);
+                        frameLayout.addView(cameraSurfaceView);
+                        frameLayout.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+        thread.start();
     }
 }
