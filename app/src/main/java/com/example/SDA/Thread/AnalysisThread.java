@@ -55,5 +55,6 @@ public class AnalysisThread extends Thread {
                 result = mySTGCNModel.run();
             }
         }
+        Log.e(TAG, "Analysis Thread Finish...");
     }
 }

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class STGCNModel {
+    public static float[][][] input = new float[3][30][17];
+
     private static final String MODEL_NAME = "stgcn.tflite";
     private static final String TAG = "STGCNModel";
     private Model model;
@@ -22,7 +24,6 @@ public class STGCNModel {
     private long beforeTime;
     private long afterTime;
     private long diffTime;
-    private float[][][] input = new float[3][30][17];
     private int pushCount;
     private int result;
 
@@ -34,6 +35,10 @@ public class STGCNModel {
         pushCount = 0;
         model = Model.createModel(context, MODEL_NAME);
         initModelShape();
+    }
+
+    public static void clearBuffer() {
+        input = new float[3][30][17];
     }
 
     private void initModelShape() {
@@ -67,7 +72,7 @@ public class STGCNModel {
         pushCount = 0;
 
         result = resultArray[0] > resultArray[1] ? 0 : 1;
-        Log.e(TAG, "ST-GCN 모델 분석 결과 : " + Arrays.toString(resultArray) + ", " + result + ", 분석 시간 : " + diffTime + "ms");
+        Log.e(TAG, "ST-GCN : " + Arrays.toString(resultArray) + ", " + result + ", Time : " + diffTime + "ms");
         return result;
     }
 

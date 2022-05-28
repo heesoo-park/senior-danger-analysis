@@ -85,3 +85,27 @@ public class PoseDetectionModel {
         return poseLandmarkInfo;
     }
 }
+//                                xMax = NEG_INF;
+//                                xMin = POS_INF;
+//                                yMax = NEG_INF;
+//                                yMin = POS_INF;
+//                                for (int i = 0; i < SKELETON_BODY_POINT; i++) {
+//                                    PoseLandmark poseLandmark = pose.getPoseLandmark(i);
+//                                    if (poseLandmark == null) {
+//                                        poseLandmarkInfo = null;
+//                                        return;
+//                                    } else {
+//                                        PointF pointF = poseLandmark.getPosition();
+//                                        allPoseLandmark[i] = pointF;
+//                                        // rect를 생성할 때 팔 부분(elbow, wrist, pinky, index, thumb)는 사용 안함
+//                                        if (i >= 13 && i <= 22)
+//                                            continue;
+//                                        xMax = Math.max(xMax, pointF.x);
+//                                        xMin = Math.min(xMin, pointF.x);
+//                                        yMax = Math.max(yMax, height - pointF.y);
+//                                        yMin = Math.min(yMin, height - pointF.y);
+//                                    }
+//                                }
+//                                rect = new RectF(xMin, yMin, xMax, yMax);
+//                                poseLandmarkInfo.setPose(pose);
+//                                poseLandmarkInfo.setRect(rect);

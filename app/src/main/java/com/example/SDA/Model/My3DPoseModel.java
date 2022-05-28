@@ -106,7 +106,7 @@ public class My3DPoseModel {
         afterTime = System.currentTimeMillis();
         diffTime = afterTime - beforeTime;
         //Log.e(TAG, "" + Arrays.toString(outputBuffer.getFloatArray()));
-        Log.e(TAG, "3D Pose Baseline Mapping! 걸린 시간 : " + diffTime + "ms");
+        Log.e(TAG, "3D Pose Baseline Mapping! Time : " + diffTime + "ms");
         return outputBuffer.getFloatArray();
     }
 

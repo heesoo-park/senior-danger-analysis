@@ -1,15 +1,15 @@
 package com.example.SDA.Service;
 
 import android.graphics.ImageFormat;
-import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.Log;
 
-import com.example.SDA.Activity.MainActivity;
+import com.example.SDA.Class.AnalysisResult;
 import com.example.SDA.Class.PoseLandmarkInfo;
 import com.example.SDA.Model.PoseDetectionModel;
+import com.example.SDA.Model.STGCNModel;
 import com.example.SDA.Thread.AnalysisThread;
 import com.example.SDA.Thread.StorageThread;
 import com.google.mlkit.vision.pose.Pose;
@@ -23,26 +23,30 @@ public class CameraService {
 
     public static Camera camera;
     public static SurfaceTexture surfaceTexture;
+    public static Queue<Pose> drawQueue;
+    public static AnalysisResult analysisResult;
 
     private static final int PICTURE_WIDTH = 480;
     private static final int PICTURE_HEIGHT = 320;
     private static final int FRAME_RATE = 10;
     private static final int CAMERA_INDEX = 0;
     private static final int CAPTURE_MODE_BURST = 2;
-    private static final int CAPTURE_MODE_NORMAL = 12;
+    private static final int CAPTURE_MODE_NORMAL = 6;
 
     private int captureMode;
     private int captureCount;
     private Queue<Pose> queue;
     private PoseDetectionModel poseDetectionModel;
     private PoseLandmarkInfo poseLandmarkInfo;
-    private RectF rect;
-    private float lastRatio, ratio, vr;
+    private float lastLastRatio, lastRatio, ratio;
     private int analysisPushCount;
+    private int nothingCount;
     private StorageThread storageThread;
 
     public CameraService(Queue<Pose> queue) {
         this.queue = queue;
+        this.drawQueue = new LinkedList<>();
+        this.analysisResult = new AnalysisResult();
         init();
     }
 
@@ -68,51 +72,84 @@ public class CameraService {
         captureMode = CAPTURE_MODE_NORMAL;
     }
 
-    private void pushPoseDetector(byte[] data) {
+    private void analysis(byte[] data) {
         poseLandmarkInfo = poseDetectionModel.detect(data);
         if (poseLandmarkInfo == null) {
+            Log.e(TAG, "CAPTURE! NOT OBJECT.");
+            drawQueue.add(null);
+            analysisResult.setResult(AnalysisResult.RESULT_NOTHING);
+            nothingCount++;
+
+            // 일정 횟수 이상 객체가 탐지되지 않으면 BURST MODE 종료.
+            if (captureMode == CAPTURE_MODE_BURST && nothingCount > 20) {
+                queue.clear();
+                captureMode = CAPTURE_MODE_NORMAL;
+                nothingCount = 0;
+                analysisPushCount = 0;
+            }
             return;
         }
 
-        rect = poseLandmarkInfo.getRect();
+        // first task...
+        nothingCount = 0;
+        Pose pose = poseLandmarkInfo.getPose();
+        RectF rect = poseLandmarkInfo.getRect();
 
+        lastLastRatio = lastRatio;
         lastRatio = ratio;
-        ratio = rect.height() / rect.width();
-        vr = ratio - lastRatio;
+        ratio = rect.width() / rect.height();
+        Log.e(TAG, "CAPTURE! " + lastLastRatio + ", " + ratio);
 
-        Log.e(TAG, "Image Capture! Size: (" + rect.width() + ", " + rect.height() + "), " + ratio + ", " + lastRatio + ", 변화량: " + vr + ", count: " + analysisPushCount);
-        if (vr < -1.5 && captureMode == CAPTURE_MODE_NORMAL) {
-            Log.e(TAG, "ratio 임계값 넘음 " + vr + ", BURST MODE START");
-            queue.clear();
+        drawQueue.add(pose);
+        analysisResult.setLastRatio(lastLastRatio);
+        analysisResult.setRatio(ratio);
+
+        if (captureMode == CAPTURE_MODE_NORMAL) {
+            analysisResult.setResult(AnalysisResult.RESULT_NOT_HAPPENED);
+        }
+
+        if (captureMode == CAPTURE_MODE_NORMAL && lastLastRatio < 0.45 && ratio > 1.2) {
+            Log.e(TAG, "FALL DOWN DOUBT! BURST MODE START.");
+            analysisResult.setResult(AnalysisResult.RESULT_FALL_DOUBT);
+            clearBuffers();
             captureMode = CAPTURE_MODE_BURST;
-            analysisPushCount = 0;
-            return;
         }
 
         if (captureMode == CAPTURE_MODE_BURST) {
             queue.add(poseLandmarkInfo.getPose());
-            analysisPushCount++;
+            analysisResult.setResult(AnalysisResult.RESULT_WAITING);
         }
 
+        // ST-GCN 분석 결과가 1이라면...
         if (AnalysisThread.result == 1) {
-            // 낙상 발생
-            Log.e(TAG, "Analysis result : 낙상 인지! BURST MODE 종료, 이미지 전송");
-            queue.clear();
-            captureMode = CAPTURE_MODE_NORMAL;
-            analysisPushCount = 0;
-            AnalysisThread.result = 0;
+            Log.e(TAG, "FALL DOWN! BURST MODE TERMINATE, CREATE STORAGE THREAD.");
+            analysisResult.setResult(AnalysisResult.RESULT_FALL_RECOGNIZE);
+
+            // 전송 스레드 실행
             storageThread = new StorageThread(data, PICTURE_WIDTH, PICTURE_HEIGHT);
             storageThread.run();
+
+            clearBuffers();
+            captureMode = CAPTURE_MODE_NORMAL;
         }
 
+        // Analysis Thread 에 120번 push(최대 4번 분석)했다면 BURST MODE 종료.
         if (analysisPushCount > 120) {
+            clearBuffers();
             captureMode = CAPTURE_MODE_NORMAL;
-            analysisPushCount = 0;
         }
+    }
+    private void clearBuffers() {
+        queue.clear();
+        analysisPushCount = 0;
+        STGCNModel.clearBuffer();
+        AnalysisThread.result = 0;
     }
 
     public void onCaptureRepeat() {
         captureCount = 0;
+        nothingCount = 0;
+        lastLastRatio = 100; lastRatio = 100; ratio = 100;
         camera.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(byte[] data, Camera camera) {
@@ -124,7 +161,7 @@ public class CameraService {
                     }
                     if (data == null)
                         return;
-                    pushPoseDetector(data);
+                    analysis(data);
                     captureCount = 0;
                 } catch (Exception e) {
                     e.printStackTrace();
