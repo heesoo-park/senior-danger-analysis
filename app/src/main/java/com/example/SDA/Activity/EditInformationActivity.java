@@ -2,6 +2,7 @@ package com.example.SDA.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +22,10 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.example.SDA.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -42,6 +46,7 @@ public class EditInformationActivity extends AppCompatActivity{
     private String careId;
     private String address;
     private String phone;
+    private String prevCareId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,7 @@ public class EditInformationActivity extends AppCompatActivity{
         careId = PreferenceManager.getString(this, PreferenceManager.CARE_ID);
         address = PreferenceManager.getString(this, PreferenceManager.ADDRESS);
         phone = PreferenceManager.getString(this, PreferenceManager.PHONE);
+        prevCareId = careId;
 
         editTextUpdateName.setText(name);
         editTextUpdateCareId.setText(careId);
@@ -99,17 +105,31 @@ public class EditInformationActivity extends AppCompatActivity{
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                HashMap<String,Object> hashMap = new HashMap<>();
-                                hashMap.put("name", name);
-                                hashMap.put("phone", phone);
-                                hashMap.put("address", address);
-                                // 보호자 수정 기능 추가해야함
-                                databaseRef.child(FirebaseDatabaseService.UserAccount).child(authService.getUid()).updateChildren(hashMap);
-                                Toast.makeText(EditInformationActivity.this,"정보수정에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
-                                ActivityCompat.finishAffinity(EditInformationActivity.this);
-                                Intent intent = new Intent(EditInformationActivity.this, SplashActivity.class);
-                                startActivity(intent);
-                                finish();
+
+                                databaseRef.child(FirebaseDatabaseService.UserIdToken).child(careId).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        Object obj = snapshot.getValue();
+                                        HashMap<String,Object> hashMap = new HashMap<>();
+                                        hashMap.put("name", name);
+                                        hashMap.put("phone", phone);
+                                        hashMap.put("address", address);
+                                        hashMap.put("careId", careId);
+                                        // 보호자 수정 기능 추가해야함
+                                        databaseRef.child(FirebaseDatabaseService.SeniorListForCare).child(prevCareId).removeValue();
+                                        databaseRef.child(FirebaseDatabaseService.UserAccount).child(authService.getUid()).updateChildren(hashMap);
+                                        Toast.makeText(EditInformationActivity.this,"정보수정에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
+                                        ActivityCompat.finishAffinity(EditInformationActivity.this);
+                                        Intent intent = new Intent(EditInformationActivity.this, SplashActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }
                         }).addOnFailureListener(new OnFailureListener() {
 

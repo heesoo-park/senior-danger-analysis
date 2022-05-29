@@ -79,6 +79,7 @@ public class SplashActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Object obj = snapshot.getValue();
                             PreferenceManager.setString(context, PreferenceManager.CARE_ID_TOKEN, obj.toString());
+                            databaseRef.child(FirebaseDatabaseService.SeniorListForCare).child(userAccount.getCareId()).child(authService.getUid()).setValue(1);
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override

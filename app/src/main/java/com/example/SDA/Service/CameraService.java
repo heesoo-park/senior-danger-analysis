@@ -118,6 +118,7 @@ public class CameraService {
         if (captureMode == CAPTURE_MODE_BURST) {
             queue.add(poseLandmarkInfo.getPose());
             analysisResult.setResult(AnalysisResult.RESULT_WAITING);
+            analysisPushCount++;
         }
 
         // ST-GCN 분석 결과가 1이라면...
@@ -139,6 +140,7 @@ public class CameraService {
             captureMode = CAPTURE_MODE_NORMAL;
         }
     }
+
     private void clearBuffers() {
         queue.clear();
         analysisPushCount = 0;
