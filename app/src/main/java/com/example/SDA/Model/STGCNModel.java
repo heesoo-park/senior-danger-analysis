@@ -16,7 +16,7 @@ public class STGCNModel {
     public static float[][][] input = new float[3][30][17];
     public static int pushCount;
 
-    private static final String MODEL_NAME = "stgcn.tflite";
+    private static final String MODEL_NAME = "mystgcn0530.tflite";
     private static final String TAG = "STGCNModel";
     private Model model;
     private Context context;

@@ -71,7 +71,7 @@ public class CameraService {
         params.setPreviewFrameRate(FRAME_RATE);
         camera.setParameters(params);
         camera.startPreview();
-        captureMode = CAPTURE_MODE_NORMAL;
+        captureMode = CAPTURE_MODE_BURST;
     }
 
     private void analysis(byte[] data) {
