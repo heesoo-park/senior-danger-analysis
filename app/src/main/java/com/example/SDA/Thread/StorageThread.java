@@ -100,7 +100,7 @@ public class StorageThread extends Thread {
         if (careIdToken == null) {
             return;
         }
-        String msg = seniorName + "님에게 위험 상황이 발생하였습니다";
+        String msg = seniorName + "님에게 위험 상황이 발생하였습니다.";
         messageService.sentPostToFCM(careIdToken, msg, imageFile.getName());
         Log.e(TAG, "Storage Thread Finish...");
     }

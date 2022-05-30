@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class STGCNModel {
     public static float[][][] input = new float[3][30][17];
+    public static int pushCount;
 
     private static final String MODEL_NAME = "stgcn.tflite";
     private static final String TAG = "STGCNModel";
@@ -24,7 +25,6 @@ public class STGCNModel {
     private long beforeTime;
     private long afterTime;
     private long diffTime;
-    private int pushCount;
     private int result;
 
     public STGCNModel(Context context) {
@@ -39,6 +39,7 @@ public class STGCNModel {
 
     public static void clearBuffer() {
         input = new float[3][30][17];
+        pushCount = 0;
     }
 
     private void initModelShape() {

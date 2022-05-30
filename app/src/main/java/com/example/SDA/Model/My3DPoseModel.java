@@ -37,7 +37,6 @@ public class My3DPoseModel {
         optionsBuilder.setNumThreads(nThreads);
         CompatibilityList compatList = new CompatibilityList();
 
-        //model = createGPUModel(4);
         if(compatList.isDelegateSupportedOnThisDevice()) {
             optionsBuilder.setDevice(Model.Device.GPU);
         }
@@ -94,8 +93,8 @@ public class My3DPoseModel {
 
     public float[] run(Pose pose) {
         // 3D pose baseline 시간 측정
-        beforeTime = System.currentTimeMillis();
 
+        beforeTime = System.currentTimeMillis();
         _3DPoseInput = convertPoseTo3DPoseBaselineInput(pose);
         Object[] inputs = new Object[]{_3DPoseInput};
         Map<Integer, Object> outputs = new HashMap();
@@ -105,8 +104,7 @@ public class My3DPoseModel {
         // 측정 종료
         afterTime = System.currentTimeMillis();
         diffTime = afterTime - beforeTime;
-        //Log.e(TAG, "" + Arrays.toString(outputBuffer.getFloatArray()));
-        Log.e(TAG, "3D Pose Baseline Mapping! Time : " + diffTime + "ms");
+        //Log.e(TAG, "3D Pose Baseline Mapping! Time : " + diffTime + "ms");
         return outputBuffer.getFloatArray();
     }
 

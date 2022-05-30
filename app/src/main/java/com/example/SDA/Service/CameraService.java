@@ -15,7 +15,9 @@ import com.example.SDA.Thread.StorageThread;
 import com.google.mlkit.vision.pose.Pose;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 public class CameraService {
@@ -77,6 +79,7 @@ public class CameraService {
         if (poseLandmarkInfo == null) {
             Log.e(TAG, "CAPTURE! NOT OBJECT.");
             drawQueue.add(null);
+            //lastLastRatio = 100; lastRatio = 100; ratio = 100;      // 객체가 탐지되지 않았으면 초기화.
             analysisResult.setResult(AnalysisResult.RESULT_NOTHING);
             nothingCount++;
 
@@ -122,7 +125,7 @@ public class CameraService {
         }
 
         // ST-GCN 분석 결과가 1이라면...
-        if (AnalysisThread.result == 1) {
+        if (captureMode == CAPTURE_MODE_BURST && AnalysisThread.result == 1) {
             Log.e(TAG, "FALL DOWN! BURST MODE TERMINATE, CREATE STORAGE THREAD.");
             analysisResult.setResult(AnalysisResult.RESULT_FALL_RECOGNIZE);
 
@@ -148,6 +151,43 @@ public class CameraService {
         AnalysisThread.result = 0;
     }
 
+    private void check(byte[] data) {
+        poseLandmarkInfo = poseDetectionModel.detect(data);
+
+        if (poseLandmarkInfo == null) {
+            //Log.e(TAG, "CAPTURE! NOT OBJECT.");
+            drawQueue.add(null);
+            lastLastRatio = 100; lastRatio = 100; ratio = 100;      // 객체가 탐지되지 않았으면 초기화.
+            analysisResult.setResult(AnalysisResult.RESULT_NOTHING);
+            nothingCount++;
+
+            // 일정 횟수 이상 객체가 탐지되지 않으면 BURST MODE 종료.
+            if (captureMode == CAPTURE_MODE_BURST && nothingCount > 20) {
+                queue.clear();
+                captureMode = CAPTURE_MODE_NORMAL;
+                nothingCount = 0;
+                analysisPushCount = 0;
+            }
+            return;
+        }
+
+        // first task...
+        nothingCount = 0;
+        Pose pose = poseLandmarkInfo.getPose();
+        RectF rect = poseLandmarkInfo.getRect();
+
+        lastLastRatio = lastRatio;
+        lastRatio = ratio;
+        ratio = rect.width() / rect.height();
+        //Log.e(TAG, "CAPTURE! " + lastLastRatio + ", " + ratio);
+
+        drawQueue.add(pose);
+        analysisResult.setLastRatio(lastLastRatio);
+        analysisResult.setRatio(ratio);
+
+        queue.add(poseLandmarkInfo.getPose());
+    }
+
     public void onCaptureRepeat() {
         captureCount = 0;
         nothingCount = 0;
@@ -164,6 +204,7 @@ public class CameraService {
                     if (data == null)
                         return;
                     analysis(data);
+                    //check(data);
                     captureCount = 0;
                 } catch (Exception e) {
                     e.printStackTrace();

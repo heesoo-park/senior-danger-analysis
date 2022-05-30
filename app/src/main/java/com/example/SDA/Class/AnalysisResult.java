@@ -11,7 +11,6 @@ public class AnalysisResult {
 
     private float lastRatio, ratio;
     private int result;
-    private RectF rect;
     public AnalysisResult() {}
 
     public float getLastRatio() {
