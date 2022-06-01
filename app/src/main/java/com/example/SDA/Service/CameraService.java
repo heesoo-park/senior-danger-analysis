@@ -32,15 +32,15 @@ public class CameraService {
     private static final int PICTURE_HEIGHT = 320;
     private static final int FRAME_RATE = 10;
     private static final int CAMERA_INDEX = 0;
-    private static final int CAPTURE_MODE_BURST = 2;
-    private static final int CAPTURE_MODE_NORMAL = 6;
-
-    private int captureMode;
-    private int captureCount;
+    private static final int CAPTURE_INTERVAL_NORMAL = 400;
+    private static final int CAPTURE_INTERVAL_BURST = 100;
+    
+    private long beforeTime, afterTime, diffTime;
     private Queue<Pose> queue;
     private PoseDetectionModel poseDetectionModel;
     private PoseLandmarkInfo poseLandmarkInfo;
     private float lastLastRatio, lastRatio, ratio;
+    private int captureInterval;
     private int analysisPushCount;
     private int nothingCount;
     private StorageThread storageThread;
@@ -71,7 +71,9 @@ public class CameraService {
         params.setPreviewFrameRate(FRAME_RATE);
         camera.setParameters(params);
         camera.startPreview();
-        captureMode = CAPTURE_MODE_BURST;
+        captureInterval = CAPTURE_INTERVAL_NORMAL;
+        nothingCount = 0;
+        lastLastRatio = 100; lastRatio = 100; ratio = 100;
     }
 
     private void analysis(byte[] data) {
@@ -84,9 +86,9 @@ public class CameraService {
             nothingCount++;
 
             // 일정 횟수 이상 객체가 탐지되지 않으면 BURST MODE 종료.
-            if (captureMode == CAPTURE_MODE_BURST && nothingCount > 20) {
+            if (captureInterval == CAPTURE_INTERVAL_BURST && nothingCount > 20) {
                 queue.clear();
-                captureMode = CAPTURE_MODE_NORMAL;
+                captureInterval = CAPTURE_INTERVAL_NORMAL;
                 nothingCount = 0;
                 analysisPushCount = 0;
             }
@@ -107,25 +109,25 @@ public class CameraService {
         analysisResult.setLastRatio(lastLastRatio);
         analysisResult.setRatio(ratio);
 
-        if (captureMode == CAPTURE_MODE_NORMAL) {
+        if (captureInterval == CAPTURE_INTERVAL_NORMAL) {
             analysisResult.setResult(AnalysisResult.RESULT_NOT_HAPPENED);
         }
 
-        if (captureMode == CAPTURE_MODE_NORMAL && lastLastRatio < 0.45 && ratio > 1.2) {
+        if (captureInterval == CAPTURE_INTERVAL_NORMAL && lastLastRatio < 0.45 && ratio > 1.2) {
             Log.e(TAG, "FALL DOWN DOUBT! BURST MODE START.");
             analysisResult.setResult(AnalysisResult.RESULT_FALL_DOUBT);
             clearBuffers();
-            captureMode = CAPTURE_MODE_BURST;
+            captureInterval = CAPTURE_INTERVAL_BURST;
         }
 
-        if (captureMode == CAPTURE_MODE_BURST) {
+        if (captureInterval == CAPTURE_INTERVAL_BURST) {
             queue.add(poseLandmarkInfo.getPose());
             analysisResult.setResult(AnalysisResult.RESULT_WAITING);
             analysisPushCount++;
         }
 
         // ST-GCN 분석 결과가 1이라면...
-        if (captureMode == CAPTURE_MODE_BURST && AnalysisThread.result == 1) {
+        if (captureInterval == CAPTURE_INTERVAL_BURST && AnalysisThread.result == 1) {
             Log.e(TAG, "FALL DOWN! BURST MODE TERMINATE, CREATE STORAGE THREAD.");
             analysisResult.setResult(AnalysisResult.RESULT_FALL_RECOGNIZE);
 
@@ -134,13 +136,13 @@ public class CameraService {
             storageThread.run();
 
             clearBuffers();
-            captureMode = CAPTURE_MODE_NORMAL;
+            captureInterval = CAPTURE_INTERVAL_NORMAL;
         }
 
         // Analysis Thread 에 120번 push(최대 4번 분석)했다면 BURST MODE 종료.
         if (analysisPushCount > 120) {
             clearBuffers();
-            captureMode = CAPTURE_MODE_NORMAL;
+            captureInterval = CAPTURE_INTERVAL_NORMAL;
         }
     }
 
@@ -151,61 +153,21 @@ public class CameraService {
         AnalysisThread.result = 0;
     }
 
-    private void check(byte[] data) {
-        poseLandmarkInfo = poseDetectionModel.detect(data);
-
-        if (poseLandmarkInfo == null) {
-            //Log.e(TAG, "CAPTURE! NOT OBJECT.");
-            drawQueue.add(null);
-            lastLastRatio = 100; lastRatio = 100; ratio = 100;      // 객체가 탐지되지 않았으면 초기화.
-            analysisResult.setResult(AnalysisResult.RESULT_NOTHING);
-            nothingCount++;
-
-            // 일정 횟수 이상 객체가 탐지되지 않으면 BURST MODE 종료.
-            if (captureMode == CAPTURE_MODE_BURST && nothingCount > 20) {
-                queue.clear();
-                captureMode = CAPTURE_MODE_NORMAL;
-                nothingCount = 0;
-                analysisPushCount = 0;
-            }
-            return;
-        }
-
-        // first task...
-        nothingCount = 0;
-        Pose pose = poseLandmarkInfo.getPose();
-        RectF rect = poseLandmarkInfo.getRect();
-
-        lastLastRatio = lastRatio;
-        lastRatio = ratio;
-        ratio = rect.width() / rect.height();
-        //Log.e(TAG, "CAPTURE! " + lastLastRatio + ", " + ratio);
-
-        drawQueue.add(pose);
-        analysisResult.setLastRatio(lastLastRatio);
-        analysisResult.setRatio(ratio);
-
-        queue.add(poseLandmarkInfo.getPose());
-    }
-
     public void onCaptureRepeat() {
-        captureCount = 0;
-        nothingCount = 0;
-        lastLastRatio = 100; lastRatio = 100; ratio = 100;
+        beforeTime = System.currentTimeMillis();
         camera.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(byte[] data, Camera camera) {
                 try {
-                    captureCount++;
-                    // capture mode에 따라 사진을 찍는 타이밍이 다름.
-                    if (captureCount != captureMode) {
-                        return;
-                    }
+                    afterTime = System.currentTimeMillis();
+                    diffTime = afterTime - beforeTime;
                     if (data == null)
                         return;
-                    analysis(data);
-                    //check(data);
-                    captureCount = 0;
+                    if (diffTime > captureInterval) {
+                        analysis(data);
+                        beforeTime = afterTime;
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
