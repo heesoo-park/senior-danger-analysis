@@ -118,7 +118,7 @@ public class ForegroundService extends Service {
         protected Integer doInBackground(Integer... values) {
             while(isCancelled() == false) {
                 try {
-                    Log.e(TAG, value * 10 + "s");
+                    //Log.e(TAG, value * 10 + "s");
                     Thread.sleep(10000);
                     value++;
                 } catch (InterruptedException ex) { }

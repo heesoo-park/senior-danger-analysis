@@ -71,7 +71,7 @@ public class PoseDetectionModel {
                                 }
                                 rect = new RectF(xMin, yMin, xMax, yMax);
 
-                                if (rect.height() > 450 || rect.width() > 700) {
+                                if (yMax > 360) {
                                     poseLandmarkInfo = null;
                                     return;
                                 }

@@ -25,6 +25,7 @@ import com.example.SDA.R;
 import com.example.SDA.Service.CameraService;
 import com.example.SDA.Service.FCMService;
 import com.example.SDA.Service.ForegroundService;
+import com.example.SDA.Thread.StorageThread;
 import com.example.SDA.View.CameraSurfaceView;
 import com.example.SDA.View.PoseDrawView;
 
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLayout() {
+
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
@@ -120,8 +122,8 @@ public class MainActivity extends AppCompatActivity {
         messageService = new FCMService();
 
         frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
-        drawView = new PoseDrawView(this);
         drawFrameLayout = (FrameLayout) findViewById(R.id.drawFrameLayout);
+        drawView = new PoseDrawView(this);
         drawFrameLayout.addView(drawView);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
 

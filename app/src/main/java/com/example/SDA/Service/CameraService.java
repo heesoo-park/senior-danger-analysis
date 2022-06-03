@@ -32,7 +32,7 @@ public class CameraService {
     private static final int PICTURE_HEIGHT = 320;
     private static final int FRAME_RATE = 10;
     private static final int CAMERA_INDEX = 0;
-    private static final int CAPTURE_INTERVAL_NORMAL = 400;
+    private static final int CAPTURE_INTERVAL_NORMAL = 500;
     private static final int CAPTURE_INTERVAL_BURST = 100;
     
     private long beforeTime, afterTime, diffTime;
@@ -87,6 +87,7 @@ public class CameraService {
 
             // 일정 횟수 이상 객체가 탐지되지 않으면 BURST MODE 종료.
             if (captureInterval == CAPTURE_INTERVAL_BURST && nothingCount > 20) {
+                lastLastRatio = 100; lastRatio = 100; ratio = 100;
                 queue.clear();
                 captureInterval = CAPTURE_INTERVAL_NORMAL;
                 nothingCount = 0;
@@ -103,7 +104,7 @@ public class CameraService {
         lastLastRatio = lastRatio;
         lastRatio = ratio;
         ratio = rect.width() / rect.height();
-        Log.e(TAG, "CAPTURE! " + lastLastRatio + ", " + ratio);
+        Log.e(TAG, "CAPTURE! " + lastLastRatio + ", " + ratio + ", width : " + rect.width() + ", height: " + rect.height());
 
         drawQueue.add(pose);
         analysisResult.setLastRatio(lastLastRatio);
@@ -113,7 +114,7 @@ public class CameraService {
             analysisResult.setResult(AnalysisResult.RESULT_NOT_HAPPENED);
         }
 
-        if (captureInterval == CAPTURE_INTERVAL_NORMAL && lastLastRatio < 0.45 && ratio > 1.2) {
+        if (captureInterval == CAPTURE_INTERVAL_NORMAL && lastLastRatio < 0.45 && ratio > 1.2 && rect.width() * 1.2 > rect.height()) {
             Log.e(TAG, "FALL DOWN DOUBT! BURST MODE START.");
             analysisResult.setResult(AnalysisResult.RESULT_FALL_DOUBT);
             clearBuffers();
@@ -167,7 +168,6 @@ public class CameraService {
                         analysis(data);
                         beforeTime = afterTime;
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

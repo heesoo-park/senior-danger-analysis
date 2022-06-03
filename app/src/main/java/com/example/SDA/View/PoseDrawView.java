@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -13,6 +14,8 @@ import androidx.annotation.NonNull;
 
 import com.example.SDA.Service.CameraService;
 import com.google.mlkit.vision.pose.Pose;
+
+import java.util.Arrays;
 
 public class PoseDrawView extends SurfaceView implements SurfaceHolder.Callback {
     SurfaceHolder holder;
@@ -27,7 +30,8 @@ public class PoseDrawView extends SurfaceView implements SurfaceHolder.Callback 
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        drawThread.start();
+        if (!drawThread.isAlive())
+            drawThread.start();
     }
 
     @Override
@@ -40,10 +44,10 @@ public class PoseDrawView extends SurfaceView implements SurfaceHolder.Callback 
     }
 
     class DrawThread extends Thread {
-        Canvas canvas;
-        SurfaceHolder mHolder;
-        Paint paint;
-        PointF[] points;
+        private Canvas canvas;
+        private SurfaceHolder mHolder;
+        private Paint paint;
+        private PointF[] points;
 
         public DrawThread(SurfaceHolder holder) {
             mHolder = holder;
@@ -57,7 +61,9 @@ public class PoseDrawView extends SurfaceView implements SurfaceHolder.Callback 
                 if (CameraService.drawQueue != null && CameraService.drawQueue.isEmpty()) {
                     continue;
                 }
+
                 canvas = holder.lockCanvas();
+
                 synchronized (mHolder) {
                     drawPose();
                 }
@@ -66,6 +72,9 @@ public class PoseDrawView extends SurfaceView implements SurfaceHolder.Callback 
         }
 
         private void drawPose() {
+            if (canvas == null) {
+                return;
+            }
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             canvas.drawColor(0xFF222222);
 
@@ -88,6 +97,7 @@ public class PoseDrawView extends SurfaceView implements SurfaceHolder.Callback 
                 yMin = Math.min(yMin, 320 - point.y);
             }
 
+            //Log.e("", "" + Arrays.toString(points));
             // draw bounding box
             paint.setColor(Color.BLUE);
             canvas.drawRect(xMin, yMin, xMax, yMax, paint);
