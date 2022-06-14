@@ -13,11 +13,12 @@ import org.tensorflow.lite.support.model.Model;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class My3DPoseModel {
-    private static final String MODEL_NAME = "3dpose.tflite";
+    private static final String MODEL_NAME = "3dpose0610.tflite";
     private static final String TAG = "My3DPoseModel";
     private Model model;
     private Context context;
@@ -68,10 +69,10 @@ public class My3DPoseModel {
         PointF leftAnklePoint = pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE).getPosition();
         PointF rightAnklePoint = pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE).getPosition();
         PointF nosePoint = pose.getPoseLandmark(PoseLandmark.NOSE).getPosition();
-        PointF spinePoint = new PointF((rightShoulderPoint.x + leftShoulderPoint.x)/2, (rightShoulderPoint.y + leftShoulderPoint.y)/2);
-        PointF thoraxPoint = new PointF(2 * spinePoint.x - (nosePoint.x + spinePoint.x) / 2, 2 * spinePoint.y - (nosePoint.y + spinePoint.y) / 2);
+        PointF spinePoint = new PointF((rightShoulderPoint.x + leftShoulderPoint.x) / 2f, (rightShoulderPoint.y + leftShoulderPoint.y) / 2f);
+        PointF thoraxPoint = new PointF(2 * spinePoint.x - (nosePoint.x + spinePoint.x) / 2f, 2 * spinePoint.y - (nosePoint.y + spinePoint.y) / 2f);
 
-        _3DPoseInput[0] = new float[]{(rightHipPoint.x + leftHipPoint.x)/2,(rightHipPoint.y + leftHipPoint.y)/2};
+        _3DPoseInput[0] = new float[]{(rightHipPoint.x + leftHipPoint.x) / 2f,(rightHipPoint.y + leftHipPoint.y) / 2f};
         _3DPoseInput[1] = new float[]{rightHipPoint.x, rightHipPoint.y};
         _3DPoseInput[2] = new float[]{rightKneePoint.x, rightKneePoint.y};
         _3DPoseInput[3] = new float[]{rightAnklePoint.x, rightAnklePoint.y};
@@ -87,13 +88,11 @@ public class My3DPoseModel {
         _3DPoseInput[13] = new float[]{rightShoulderPoint.x, rightShoulderPoint.y};
         _3DPoseInput[14] = new float[]{rightElbowPoint.x, rightElbowPoint.y};
         _3DPoseInput[15] = new float[]{rightWristPoint.x, rightWristPoint.y};
-
         return _3DPoseInput;
     }
 
     public float[] run(Pose pose) {
         // 3D pose baseline 시간 측정
-
         beforeTime = System.currentTimeMillis();
         _3DPoseInput = convertPoseTo3DPoseBaselineInput(pose);
         Object[] inputs = new Object[]{_3DPoseInput};

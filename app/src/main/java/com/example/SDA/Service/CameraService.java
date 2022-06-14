@@ -33,9 +33,11 @@ public class CameraService {
     private static final int FRAME_RATE = 10;
     private static final int CAMERA_INDEX = 0;
     private static final int CAPTURE_INTERVAL_NORMAL = 500;
-    private static final int CAPTURE_INTERVAL_BURST = 100;
-    
+    private static final int CAPTURE_INTERVAL_BURST = 150;
+
     private long beforeTime, afterTime, diffTime;
+    private long startTime, currTime;
+    private float lowerBound, upperBound, hipHeight;
     private Queue<Pose> queue;
     private PoseDetectionModel poseDetectionModel;
     private PoseLandmarkInfo poseLandmarkInfo;
@@ -74,14 +76,14 @@ public class CameraService {
         captureInterval = CAPTURE_INTERVAL_NORMAL;
         nothingCount = 0;
         lastLastRatio = 100; lastRatio = 100; ratio = 100;
+        hipHeight = 0;
     }
 
     private void analysis(byte[] data) {
         poseLandmarkInfo = poseDetectionModel.detect(data);
         if (poseLandmarkInfo == null) {
-            Log.e(TAG, "CAPTURE! NOT OBJECT.");
+            //Log.e(TAG, "CAPTURE! NOT OBJECT.");
             drawQueue.add(null);
-            //lastLastRatio = 100; lastRatio = 100; ratio = 100;      // 객체가 탐지되지 않았으면 초기화.
             analysisResult.setResult(AnalysisResult.RESULT_NOTHING);
             nothingCount++;
 
@@ -100,13 +102,17 @@ public class CameraService {
         nothingCount = 0;
         Pose pose = poseLandmarkInfo.getPose();
         RectF rect = poseLandmarkInfo.getRect();
+        hipHeight = poseLandmarkInfo.getHipHeight();
 
         lastLastRatio = lastRatio;
         lastRatio = ratio;
         ratio = rect.width() / rect.height();
-        Log.e(TAG, "CAPTURE! " + lastLastRatio + ", " + ratio + ", width : " + rect.width() + ", height: " + rect.height());
+        Log.e(TAG, "CAPTURE! " + lastLastRatio + ", " + ratio + ", width : " + rect.width() + ", height: " + rect.height() + ", queue : " + queue.size());
 
-        drawQueue.add(pose);
+        if (analysisPushCount % 3 == 0) {
+            drawQueue.add(pose);
+        }
+
         analysisResult.setLastRatio(lastLastRatio);
         analysisResult.setRatio(ratio);
 
@@ -114,8 +120,10 @@ public class CameraService {
             analysisResult.setResult(AnalysisResult.RESULT_NOT_HAPPENED);
         }
 
-        if (captureInterval == CAPTURE_INTERVAL_NORMAL && lastLastRatio < 0.45 && ratio > 1.2 && rect.width() * 1.2 > rect.height()) {
+        if (captureInterval == CAPTURE_INTERVAL_NORMAL && lastLastRatio < 0.45 && ratio > 1.2 && rect.width() > rect.height() && (hipHeight < lowerBound || hipHeight > upperBound)) {
+        //if (captureInterval == CAPTURE_INTERVAL_NORMAL && lastLastRatio < 0.45 && ratio > 1.2 && rect.width() > rect.height()) {
             Log.e(TAG, "FALL DOWN DOUBT! BURST MODE START.");
+            startTime = System.currentTimeMillis();
             analysisResult.setResult(AnalysisResult.RESULT_FALL_DOUBT);
             clearBuffers();
             captureInterval = CAPTURE_INTERVAL_BURST;
@@ -128,7 +136,7 @@ public class CameraService {
         }
 
         // ST-GCN 분석 결과가 1이라면...
-        if (captureInterval == CAPTURE_INTERVAL_BURST && AnalysisThread.result == 1) {
+        if (captureInterval == CAPTURE_INTERVAL_BURST && AnalysisThread.result == 1 && rect.width() > rect.height()) {
             Log.e(TAG, "FALL DOWN! BURST MODE TERMINATE, CREATE STORAGE THREAD.");
             analysisResult.setResult(AnalysisResult.RESULT_FALL_RECOGNIZE);
 
@@ -138,13 +146,21 @@ public class CameraService {
 
             clearBuffers();
             captureInterval = CAPTURE_INTERVAL_NORMAL;
+            startTime = -15000;
         }
 
-        // Analysis Thread 에 120번 push(최대 4번 분석)했다면 BURST MODE 종료.
-        if (analysisPushCount > 120) {
+        currTime = System.currentTimeMillis();
+
+        if (captureInterval == CAPTURE_INTERVAL_BURST && (currTime - startTime > 20000)) {
             clearBuffers();
             captureInterval = CAPTURE_INTERVAL_NORMAL;
+            Log.e(TAG, "TIMEOUT! BURST MODE TERMINATE. ");
         }
+
+        float range = poseLandmarkInfo.getRange();
+
+        lowerBound = hipHeight - range / 1.2f;
+        upperBound = hipHeight + range / 1.2f;
     }
 
     private void clearBuffers() {

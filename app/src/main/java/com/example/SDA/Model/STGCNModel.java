@@ -2,21 +2,25 @@ package com.example.SDA.Model;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
 import org.tensorflow.lite.Tensor;
+import org.tensorflow.lite.support.common.FileUtil;
+import org.tensorflow.lite.support.label.TensorLabel;
 import org.tensorflow.lite.support.model.Model;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class STGCNModel {
     public static float[][][] input = new float[3][30][17];
     public static int pushCount;
 
-    private static final String MODEL_NAME = "mystgcn0530.tflite";
+    private static final String MODEL_NAME = "mystgcn0614final.tflite";
     private static final String TAG = "STGCNModel";
     private Model model;
     private Context context;
@@ -70,8 +74,7 @@ public class STGCNModel {
         diffTime = afterTime - beforeTime;
 
         float[] resultArray = outputBuffer.getFloatArray();
-        pushCount = 0;
-
+        clearBuffer();
         result = resultArray[0] > resultArray[1] ? 0 : 1;
         Log.e(TAG, "ST-GCN : " + Arrays.toString(resultArray) + ", " + result + ", Time : " + diffTime + "ms");
         return result;

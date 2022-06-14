@@ -1,6 +1,5 @@
 package com.example.SDA.Thread;
 
-import android.graphics.PointF;
 import android.util.Log;
 
 import com.example.SDA.Activity.MainActivity;

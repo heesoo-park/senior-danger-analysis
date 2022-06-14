@@ -59,6 +59,7 @@ public class PoseDetectionModel {
                                         return;
                                     } else {
                                         PointF pointF = poseLandmark.getPosition();
+
                                         allPoseLandmark[i] = pointF;
                                         // rect를 생성할 때 팔 부분(elbow, wrist, pinky, index, thumb)는 사용 안함
                                         if (i >= 13 && i <= 22)
@@ -69,13 +70,19 @@ public class PoseDetectionModel {
                                         yMin = Math.min(yMin, height - pointF.y);
                                     }
                                 }
-                                rect = new RectF(xMin, yMin, xMax, yMax);
 
-                                if (yMax > 360) {
+                                rect = new RectF(xMin, yMin, xMax, yMax);
+                                if (yMax > 500) {
                                     poseLandmarkInfo = null;
                                     return;
                                 }
+                                float hipHeight = (allPoseLandmark[23].y + allPoseLandmark[24].y) / 2;
+                                float leftRange = Math.abs(allPoseLandmark[25].y - allPoseLandmark[23].y);
+                                float rightRange = Math.abs(allPoseLandmark[26].y - allPoseLandmark[24].y);
+                                float range = Math.max(leftRange, rightRange);
 
+                                poseLandmarkInfo.setHipHeight(hipHeight);
+                                poseLandmarkInfo.setRange(range);
                                 poseLandmarkInfo.setPose(pose);
                                 poseLandmarkInfo.setRect(rect);
                             }
