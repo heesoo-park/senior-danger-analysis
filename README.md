@@ -10,7 +10,7 @@
 ## 소프트웨어 프로그램 소스
 
 [Github] SDA 단말기앱 https://github.com/h-spear/Senior-Danger-Analysis  
-[Github] SDA 보호기앱 https://github.com/h-spear/Senior-Danger-Analysis-Care-App  
+[Github] SDA 보호자앱 https://github.com/h-spear/Senior-Danger-Analysis-Care-App  
 [Github] SDA MODEL https://github.com/ttjh1234/CSproject_SDA
 
 ---
